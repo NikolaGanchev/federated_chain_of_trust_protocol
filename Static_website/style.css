@@ -1,4 +1,4 @@
-/* Color Palette from coolors.co/ffede1-f9fbf2-d7f9ff-afcbff-0e1c36 */
+/* --- Color Palette --- */
 :root {
     --seashell: #FFEDE1;
     --baby-powder: #F9FBF2;
@@ -7,14 +7,22 @@
     --midnight-blue: #0E1C36;
 }
 
+/* --- Reset & Base Styles --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden; 
+}
+
 body {
     background-color: var(--baby-powder);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
     color: var(--midnight-blue);
     line-height: 1.6;
 }
 
+/* --- Navigation --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -25,8 +33,14 @@ body {
 }
 
 .logo img {
-    height: 40px;
+    height: 100px; 
     display: block;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
 }
 
 .nav-links ul {
@@ -49,16 +63,19 @@ body {
     color: white;
 }
 
+/* --- Main Layout --- */
 .content-wrapper {
-    max-width: 1100px;
-    margin: 60px auto;
-    padding: 0 20px;
+    width: 100%;
+    margin: 0; 
+    padding: 0;
     text-align: center;
 }
 
 h1 {
     font-size: 2.8rem;
-    margin-bottom: 15px;
+    margin: 60px auto 15px auto;
+    max-width: 1100px;
+    padding: 0 20px;
 }
 
 h5 {
@@ -67,14 +84,19 @@ h5 {
     max-width: 850px;
     margin: 0 auto 60px auto;
     color: #444;
+    padding: 0 20px;
 }
 
+/* --- Flow Chart / Boxes --- */
 .flow-container {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 15px;
     flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto 60px auto;
+    padding: 0 20px;
 }
 
 .box {
@@ -87,11 +109,7 @@ h5 {
     justify-content: center;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                box-shadow 0.3s ease;
     cursor: pointer;
-    position: relative;
-    top: 0;
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
                 box-shadow 0.4s ease;
 }
@@ -105,126 +123,148 @@ h5 {
     transform: translateY(-4px) scale(0.98);
 }
 
-.local { 
-    background-color: var(--midnight-blue); 
-    color: white; 
+.local { background-color: var(--midnight-blue); color: white; }
+.national { background-color: var(--baby-blue-eyes); color: var(--midnight-blue); }
+.mega { background-color: var(--midnight-blue); color: white; }
+.rp { background-color: var(--celeste); color: #1b4332; border: 1px solid rgba(0,0,0,0.05); }
+
+.title { font-weight: bold; font-size: 0.95rem; text-transform: uppercase; margin-bottom: 5px; }
+.url { font-size: 0.8rem; margin-bottom: 12px; opacity: 0.85; }
+.description { font-size: 0.8rem; font-style: italic; line-height: 1.4; }
+
+.full-section {
+    width: 100%;
+    padding: 50px 0; 
+    display: block;
+    background-color: var(--celeste);
 }
 
-.national { 
-    background-color: var(--baby-blue-eyes); 
-    color: var(--midnight-blue); 
+.full-section.alt {
+    background-color: var(--seashell); 
 }
 
-.mega { 
-    background-color: var(--midnight-blue); 
-    color: white; 
+.section-content {
+    max-width: 1100px; 
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
 }
 
-.rp { 
-    background-color: var(--celeste); 
-    color: #1b4332; 
-    border: 1px solid rgba(0,0,0,0.05); 
+.section-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
 }
 
-.title { 
-    font-weight: bold; 
-    font-size: 0.95rem; 
-    text-transform: uppercase; 
-    margin-bottom: 5px; 
+.section-content p {
+    font-size: 1.1rem;
+    color: #444;
 }
 
-.url { 
-    font-size: 0.8rem; 
-    margin-bottom: 12px; 
-    opacity: 0.85; 
+/* --- Visual Container --- */
+#visual1 {
+    width: 90%;
+    max-width: 800px;
+    height: 600px;
+    margin: 40px auto;
+    background-color: var(--seashell);
+    border: 2px solid var(--baby-blue-eyes);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.description { 
-    font-size: 0.8rem; 
-    font-style: italic; 
-    line-height: 1.4; 
-}
-
-.arrow { 
-    font-size: 24px; 
-    font-weight: bold; 
-    color: var(--midnight-blue); 
-}
-
-/* --- Mobile Responsiveness --- */
+/* --- Responsiveness --- */
 @media (max-width: 850px) {
     .flow-container {
         flex-direction: column;
     }
-    .arrow {
+    .fa-angles-right {
         transform: rotate(90deg);
         margin: 10px 0;
     }
 }
 
-#visual1 {
-    width: 800px;
-    height: 600px;
-
-    margin: 40px auto;
-
-    background-color: var(--seashell);
-    border: 2px solid var(--accent-blue);
-    border-radius: 12px;
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    overflow: hidden;
-    position: relative;
-    
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-}
-
 @media (max-width: 650px) {
     #visual1 {
-        width: 90%;
         height: auto;
         aspect-ratio: 3 / 2;
     }
+    h1 { font-size: 2rem; }
+    .nav-links ul { gap: 20px; }
 }
 
-.logo img {
-    height: 100px; 
-    display: block;
-    width: auto;
-    transition: transform 0.3s ease;
+/* --- Table Section Styling --- */
+
+.table-header {
+    text-align: left;
+    color: var(--midnight-blue);
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+    padding-left: 15px;
 }
 
-.logo img:hover {
-    transform: scale(1.05);
-}
-
-.full-section {
+.table-container {
     width: 100%;
-    padding: 80px 20px;
-    background: #f5f5f5;
+    margin-top: 20px;
+    overflow-x: auto; /* Scrollable on mobile */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    background: white;
 }
 
-.full-section.alt {
-    background: #e9ecef;
+.fancy-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 1rem;
 }
 
-.section-content {
-    max-width: 1100px;
-    margin: 0 auto;
-    text-align: center;
+/* Header Styling */
+.fancy-table thead tr {
+    background-color: var(--midnight-blue);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.section-content h2 {
-    font-size: 32px;
-    margin-bottom: 15px;
+.fancy-table th, 
+.fancy-table td {
+    padding: 18px 25px;
 }
 
-.section-content p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #444;
+/* Row Borders and Transitions */
+.fancy-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.fancy-table tbody tr:last-of-type {
+    border-bottom: 2px solid var(--midnight-blue);
+}
+
+/* Hover Effect */
+.fancy-table tbody tr:hover {
+    background-color: rgba(175, 203, 255, 0.15); /* Subtle baby-blue highlight */
+    cursor: default;
+}
+
+/* Specific Column Styling */
+.format-cell {
+    font-weight: 700;
+    color: var(--midnight-blue);
+    width: 30%;
+    white-space: nowrap;
+}
+
+/* --- Mobile Tweak --- */
+@media (max-width: 768px) {
+    .format-cell {
+        width: auto;
+        white-space: normal;
+    }
 }
