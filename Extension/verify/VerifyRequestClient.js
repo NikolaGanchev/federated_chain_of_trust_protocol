@@ -1,4 +1,5 @@
-class VerifyRequestClient {
+import VerifyRequest from "./VerifyRequest";
+export default class VerifyRequestClient {
 
     constructor(endpointUrl) {
         this.endpointUrl = endpointUrl;

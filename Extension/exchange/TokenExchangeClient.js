@@ -1,4 +1,4 @@
-class TokenExchangeClient {
+export default class TokenExchangeClient {
 
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
