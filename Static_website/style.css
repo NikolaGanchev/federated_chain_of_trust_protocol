@@ -20,7 +20,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: var(--midnight-blue);
-    padding: 1rem 5%;
+    padding: 0.5rem 5%; 
     color: white;
 }
 
@@ -32,7 +32,7 @@ body {
 .nav-links ul {
     list-style: none;
     display: flex;
-    gap: 25px;
+    gap: 50px;
     margin: 0;
     padding: 0;
 }
@@ -40,7 +40,8 @@ body {
 .nav-links a {
     text-decoration: none;
     color: var(--baby-blue-eyes);
-    font-weight: 500;
+    font-size: 1.2em;
+    font-weight: 750;
     transition: color 0.3s ease;
 }
 
@@ -189,4 +190,17 @@ h5 {
         height: auto;
         aspect-ratio: 3 / 2;
     }
+}
+
+.logo img {
+    /* Changed from 40px to 60px - adjust as needed */
+    height: 100px; 
+    display: block;
+    width: auto; /* Maintains aspect ratio */
+    transition: transform 0.3s ease;
+}
+
+/* Optional: Add a hover effect to make it feel interactive */
+.logo img:hover {
+    transform: scale(1.05);
 }
