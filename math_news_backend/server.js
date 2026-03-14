@@ -7,27 +7,27 @@ const PORT = 5000;
 const mathArticles = [
   { 
     title: "Local Variable Finds Itself, Still Can't Find X", 
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800" 
+    image: "https://i.sstatic.net/LWPJy.png"
   },
   { 
-    title: "Is 3.14 Really Delicious? Our Review of Pi", 
-    image: "https://images.unsplash.com/photo-1509228468518-180dd482180c?w=800" 
+    title: "A new mathemathical breakthrough changes everything we know about...", 
+    image: "https://pbs.twimg.com/media/Euy5MtLWgAI75qo.jpg"
   },
   { 
-    title: "Parallel Lines Meet at Infinity; Only To Realize They Have Nothing in Common", 
-    image: "https://images.unsplash.com/photo-1632605284619-3071f008447d?w=800" 
+    title: "New type of square root found", 
+    image: "https://i0.wp.com/boingboing.net/wp-content/uploads/2016/05/square-root.jpg?fit=930%2C620&quality=60&ssl=1"
   },
   { 
-    title: "Top 10 Imaginary Friends That Are Just Square Roots of Negatives", 
-    image: "https://images.unsplash.com/photo-1596495573826-3946d028b1f3?w=800" 
+    title: "Scientists found math and music are fundamentally intertwined", 
+    image: "https://media.tenor.com/jiku0obSsyEAAAAe/ascending-spongebob.png" 
   },
   { 
-    title: "Breaking: Fibonacci Sequence Refuses to Stop Growing", 
-    image: "https://images.unsplash.com/photo-1518133910546-b6c2fb7d79e3?w=800" 
+    title: "The method of solving equations they don't want you to know about", 
+    image: "https://st4.depositphotos.com/2487349/25360/i/450/depositphotos_253607274-stock-photo-discriminant-quadratic-equation-written-chalk.jpg" 
   },
   { 
     title: "Zero Claims It's Being Divided For No Reason", 
-    image: "https://images.unsplash.com/photo-1635070040809-6e3e15720743?w=800" 
+    image: "https://www.mathsisfun.com/numbers/images/divide-by-zero.jpg" 
   }
 ];
 
