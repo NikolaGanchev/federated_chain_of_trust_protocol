@@ -1,7 +1,9 @@
-import TokenResponseStore from "./response/TokenResponseStorage";
-import IssuerTrustGraphStorage from "./issuer/graph/TrustGraphStorage";
+import TokenResponseStorage from "./response/TokenResponseStorage";
+import IssuerTrustGraphStorage from "./issuer/graph/IssuerTrustGraphStorage";
+import TokenResponse from "./response/TokenResponse";
+import IssuerGraphBuilder from "./issuer/graph/IssuerGraphBuilder";
 
-let tokenResponses = await TokenResponseStore.loadResponses()
+let tokenResponses = await TokenResponseStorage.loadResponses()
 let truthGraphs = await IssuerTrustGraphStorage.loadGraphs()
 
 async function sendLoginForm(url) {
@@ -44,7 +46,7 @@ document.getElementById("login-form").addEventListener("submit", async function 
         }
 
         truthGraphs.push(await new IssuerGraphBuilder(url).build())
-        await TokenResponseStore.saveTokenResponses(tokenResponses)
+        await TokenResponseStorage.saveTokenResponses(tokenResponses)
     } catch (err) {
         console.error(err);
     }
