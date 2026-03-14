@@ -29,8 +29,8 @@
     "storage",
     "activeTab",
     "scripting",
-    "webRequest"
+    "declarativeNetRequestWithHostAccess",
+    "notifications"
   ],
-
   "host_permissions": ["<all_urls>"]
 }
