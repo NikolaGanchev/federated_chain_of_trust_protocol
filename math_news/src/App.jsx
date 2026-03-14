@@ -7,7 +7,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/content')
+   fetch('http://localhost:5000/content')
       .then((res) => {
         if (!res.ok) throw new Error('Forbidden');
         return res.json();
