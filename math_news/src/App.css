@@ -1,9 +1,9 @@
 /* Container and Page Styles */
 .math-news-container {
   padding: 20px;
-  background-color: #0f0f0f;
+  background-color: #c6c7ff;
   min-height: 100vh;
-  color: white;
+  color: rgb(0, 0, 0);
   font-family: "Roboto", Arial, sans-serif;
 }
 
@@ -61,7 +61,7 @@
 
 .article-meta {
   font-size: 14px;
-  color: #aaa;
+  color: #434242;
   margin: 0;
 }
 
@@ -72,7 +72,7 @@
   align-items: center;
   height: 100vh;
   font-size: 24px;
-  background-color: #0f0f0f;
+  background-color: #c8efc4;
 }
 
 .error-text {

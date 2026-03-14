@@ -13,15 +13,12 @@ const App = () => {
         return res.json();
       })
       .then((data) => {
-        // Grouping the pairs: [ {img}, {text}, {img}, {text} ]
         const formatted = [];
         for (let i = 0; i < data.length; i++) {
-          if (data[i].isText === false) {
-            formatted.push({
-              image: data[i].content,
-              title: data[i + 1]?.isText ? data[i + 1].content : "Untitled Proof"
-            });
-          }
+          formatted.push({
+              image: data[i].image,
+              title: data[i].title
+          });
         }
         setArticles(formatted);
         setLoading(false);
@@ -38,7 +35,7 @@ const App = () => {
   return (
     <div className="math-news-container">
       <header className="math-news-header">
-        <h1>MathTube News</h1>
+        <h1>Math News</h1>
       </header>
 
       <div className="articles-grid">
@@ -53,7 +50,6 @@ const App = () => {
             </div>
             <div className="article-info">
               <h3 className="article-title">{article.title}</h3>
-              <p className="article-meta">3.14M views • 1.618 hours ago</p>
             </div>
           </div>
         ))}
