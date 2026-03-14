@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FTP Demo Wallet</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border: none;
+    background: #2c6bed;
+    color: white;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: #555;
+}
+
+button.danger {
+    background: #c0392b;
+}
+
+.status {
+    background: #eee;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Federated Trust Wallet</h2>
+
+<div class="section">
+<h3>Local Issuer</h3>
+<button id="issueLocalToken">Issue Local Token</button>
+</div>
+
+<div class="section">
+<h3>Token Exchange</h3>
+<button id="exchangeLocalToNational">Exchange Local → National</button>
+<button id="exchangeNationalToMega">Exchange National → MegaIssuer</button>
+</div>
+
+<div class="section">
+<h3>Login</h3>
+<button id="loginWebsite">Login to Website</button>
+</div>
+
+<div class="section">
+<h3>Token Management</h3>
+<button class="secondary" id="showTokens">Show Stored Tokens</button>
+<button class="secondary" id="refreshChain">Re-run Full Exchange Chain</button>
+<button class="danger" id="clearTokens">Clear Tokens</button>
+</div>
+
+<div class="section">
+<h3>Status</h3>
+<div class="status" id="statusBox">
+No actions performed yet.
+</div>
+</div>
+
+</div>
+<script slot="./popup.html"></script>
+</body>
+</html>
