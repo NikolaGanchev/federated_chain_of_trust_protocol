@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="FlowExample.css">
+    <title>Navigation Header</title>
+
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <a href="#"><img src="Images/Logo.png" alt="Logo" /></a>
+        </div>
+
+        <nav class="nav-links">
+            <ul>
+                <li><a href="Index.html">Home</a></li>
+                <li><a href="FlowExample.html">Flow example</a></li>
+                <li><a href="Papers.html">Papers</a></li>
+                <li><a href="AboutUs.html">About us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="content-container">
+        <section class="flow-section">
+            <h1 class="main-title">Full Login Flow</h1>
+            <p class="scenario-text">
+                <strong>Scenario:</strong> A user from Bulgaria tries to log into a website. The website only trusts
+                <em>MegaIssuer</em>. The user has a token from their local city clerk.
+            </p>
+
+            <div class="table-wrapper">
+                <table class="login-table">
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th class="col-step">Step & Entity</th>
+                            <th class="col-details">Technical Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="step-badge">1</span></td>
+                            <td><strong>User requests login</strong><br><small>[Browser → RP]</small></td>
+                            <td>RP generates a session ID and returns the login page. Page tells the user: <em>'Prove
+                                    your nationality to continue.'</em></td>
+                        </tr>
+                        <tr>
+                            <td><span class="step-badge">2</span></td>
+                            <td><strong>Client holds local token</strong><br><small>[Client (wallet/app)]</small></td>
+                            <td>Client checks its token store. It has a JWT issued by <code>blagoevgradissuer.bg</code>.
+                                The
+                                RP requires a MegaIssuer token. Client needs to exchange upward.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="step-badge">3</span></td>
+                            <td><strong>Exchange: Local → National</strong><br><small>[Client → National Issuer]</small>
+                            </td>
+                            <td><code>POST https://bulgarianissuer.bg/exchange_token</code><br>National issuer fetches
+                                local-clerk.bg's public key, verifies the token, issues a fresh JWT.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="step-badge">4</span></td>
+                            <td><strong>Exchange: National → MegaIssuer</strong><br><small>[Client → MegaIssuer]</small>
+                            </td>
+                            <td><code>POST https://megaissuer.com/exchange_token</code><br>MegaIssuer verifies the
+                                national token, issues a fresh JWT signed with its own key.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="step-badge">5</span></td>
+                            <td><strong>Client presents token to RP</strong><br><small>[Client → RP]</small></td>
+                            <td><code>POST https://website.com/fctp-callback</code><br>The RP sees only a MegaIssuer
+                                token. It has no idea the user is from a local city system. It learns:
+                                <code>nationality:BG</code>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="step-badge">6</span></td>
+                            <td><strong>RP verifies and logs user in</strong><br><small>[RP]</small></td>
+                            <td>RP calls <code>POST https://megaissuer.com/verify_token</code>. Checks nullifier not
+                                already used. User is logged in.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

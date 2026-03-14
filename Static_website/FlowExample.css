@@ -1,0 +1,92 @@
+:root {
+    --midnight-blue: #0E1C36;
+    --baby-blue-eyes: #AFCBFF;
+    --baby-powder: #F9FBF2;
+    --celeste: #D7F9FF;
+}
+
+body {
+    background-color: var(--baby-powder);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--midnight-blue);
+    margin: 0;
+}
+
+.content-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.main-title {
+    font-size: 2.2rem;
+    color: var(--midnight-blue);
+    margin-bottom: 10px;
+}
+
+.scenario-text {
+    margin-bottom: 30px;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* --- Table Styling --- */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.login-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.login-table thead tr {
+    background-color: var(--midnight-blue);
+    color: white;
+}
+
+.login-table th, .login-table td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.col-num { width: 50px; }
+.col-step { width: 250px; }
+
+/* Step Number Badges */
+.step-badge {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: var(--midnight-blue);
+    color: white;
+    text-align: center;
+    line-height: 28px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Metadata styling */
+small {
+    color: #666;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+.login-table tbody tr:hover {
+    background-color: rgba(175, 203, 255, 0.1);
+}
