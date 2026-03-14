@@ -1,259 +1,72 @@
-:root {
-    --midnight-blue: #0E1C36;
-    --baby-blue-eyes: #AFCBFF;
-    --baby-powder: #F9FBF2;
-    --celeste: #D7F9FF;
-
-    --text-dark: #1f2a44;
-    --muted-text: #4f5d75;
-    --card-bg: rgba(255, 255, 255, 0.72);
-    --card-border: rgba(14, 28, 54, 0.08);
-    --soft-shadow: 0 12px 35px rgba(14, 28, 54, 0.12);
-    --hero-shadow: 0 20px 45px rgba(14, 28, 54, 0.14);
-}
-
-* {
+/* --- Global Styles --- */
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.7;
+    color: #1e293b; 
+    background-color: #F9FBF2;
 }
 
-body {
-    background:
-        radial-gradient(circle at top left, rgba(175, 203, 255, 0.35), transparent 28%),
-        radial-gradient(circle at top right, rgba(215, 249, 255, 0.75), transparent 24%),
-        linear-gradient(180deg, #fcfdf8 0%, var(--baby-powder) 100%);
-    font-family: 'Segoe UI', sans-serif;
-    color: var(--midnight-blue);
-    min-height: 100vh;
-    padding: 0 20px 50px;
-}
-
-/* NAVBAR */
-.navbar {
-    position: sticky;
-    top: 18px;
-    z-index: 1000;
-    max-width: 1200px;
-    margin: 20px auto 30px;
-    padding: 16px 28px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(249, 251, 242, 0.78);
-    border: 1px solid rgba(14, 28, 54, 0.08);
-    border-radius: 18px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(14, 28, 54, 0.08);
-}
-
-.logo img {
-    height: 56px;
-    width: auto;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.logo img:hover {
-    transform: scale(1.04);
-}
-
-.nav-links ul {
-    list-style: none;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-}
-
-.nav-links a {
-    position: relative;
-    text-decoration: none;
-    color: var(--midnight-blue);
-    font-weight: 600;
-    padding: 10px 16px;
-    border-radius: 10px;
-    transition: all 0.25s ease;
-}
-
-.nav-links a:hover {
-    background-color: rgba(175, 203, 255, 0.22);
-    transform: translateY(-2px);
-}
-
-.nav-links a::after {
-    content: "";
-    position: absolute;
-    left: 16px;
-    bottom: 7px;
-    width: 0;
-    height: 2px;
-    background: var(--baby-blue-eyes);
-    border-radius: 10px;
-    transition: width 0.25s ease;
-}
-
-.nav-links a:hover::after {
-    width: calc(100% - 32px);
-}
-
-/* HERO */
+/* --- Hero Section --- */
 .hero-section {
-    max-width: 1200px;
-    margin: 45px auto 30px;
-    padding: 70px 40px;
+    background-color: #F9FBF2;
+    padding: 30px 20px 60px 20px;
     text-align: center;
-    border-radius: 24px;
-    background:
-        linear-gradient(135deg, rgba(175, 203, 255, 0.38), rgba(215, 249, 255, 0.7)),
-        rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(14, 28, 54, 0.08);
-    box-shadow: var(--hero-shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-section::before,
-.hero-section::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    opacity: 0.45;
-}
-
-.hero-section::before {
-    width: 220px;
-    height: 220px;
-    background: rgba(175, 203, 255, 0.45);
-    top: -70px;
-    left: -50px;
-    filter: blur(30px);
-}
-
-.hero-section::after {
-    width: 240px;
-    height: 240px;
-    background: rgba(215, 249, 255, 0.85);
-    bottom: -90px;
-    right: -60px;
-    filter: blur(35px);
 }
 
 .hero-section h1 {
-    font-size: clamp(2.5rem, 5vw, 4.4rem);
-    color: var(--midnight-blue);
+    font-size: 3.5rem;
+    color: #0f172a; 
     font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .hero-section h5 {
-    max-width: 780px;
-    margin: 0 auto;
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    color: #64748b; 
     font-weight: 400;
-    color: var(--muted-text);
-    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-/* MAIN TEXT CARD */
+/* --- Typography --- */
 p {
-    max-width: 1100px;
-    margin: 30px auto 0;
-    padding: 34px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
-    box-shadow: var(--soft-shadow);
-    line-height: 1.8;
-    font-size: 1.03rem;
-    color: var(--text-dark);
-    text-align: justify;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    padding: 0 25px;
+    font-size: 1.15rem;
+    color: #334155;
 }
 
-p::first-letter {
-    font-size: 2.8rem;
-    font-weight: 700;
-    float: left;
-    line-height: 1;
-    margin-right: 10px;
-    color: var(--midnight-blue);
+p:first-of-type {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #0f172a;
+    border-left: 4px solid #bfdbfe; 
+    padding-left: 35px;
 }
 
-/* Subtle entrance */
-.navbar,
-.hero-section,
-p {
-    animation: fadeUp 0.7s ease both;
+/* --- Components --- */
+.info-card {
+    background: #0f172a;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
 }
 
-.hero-section {
-    animation-delay: 0.08s;
-}
-
-p {
-    animation-delay: 0.16s;
-}
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
+/* --- Media Queries --- */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .navbar {
-        flex-direction: column;
-        gap: 16px;
-        padding: 18px 20px;
-    }
-
-    .nav-links ul {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .hero-section {
-        padding: 55px 24px;
-    }
-
-    p {
-        padding: 24px;
-    }
-}
-
-@media (max-width: 600px) {
-    body {
-        padding: 0 12px 30px;
-    }
-
-    .logo img {
-        height: 46px;
-    }
-
-    .nav-links a {
-        padding: 8px 12px;
-        font-size: 0.95rem;
-    }
-
-    .hero-section h5 {
-        font-size: 0.96rem;
-    }
-
-    p {
-        font-size: 0.98rem;
-    }
-
-    p::first-letter {
-        font-size: 2.2rem;
+    
+    p:first-of-type {
+        border-left: none;
+        padding-left: 25px;
+        text-align: center;
     }
 }
