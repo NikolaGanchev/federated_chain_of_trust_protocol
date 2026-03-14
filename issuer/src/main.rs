@@ -121,7 +121,7 @@ async fn main() {
         .with_state(state);
 
     let addr = format!("0.0.0.0:{}", args.port);
-    tracing::info!("🌐 '{}' listening on {}", args.display_name, addr);
+    tracing::info!("'{}' listening on {}", args.display_name, addr);
     let listener = tokio::net::TcpListener::bind(&addr).await.expect("bind failed");
     axum::serve(listener, app).await.expect("server error");
 }

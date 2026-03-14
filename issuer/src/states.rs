@@ -34,7 +34,6 @@ pub struct IssuerState {
     pub trusts: RwLock<HashSet<String>>,
     pub parents: RwLock<HashSet<String>>,
     pub trust_cache: RwLock<HashMap<String, CachedNode>>,
-    // TODO MD5
     pub nullifiers: RwLock<HashSet<String>>,
 
     pub http_client: reqwest::Client,
