@@ -1,7 +1,6 @@
-import IssuerTrustGraph from "./IssuerTrustGraph";
+import IssuerTrustGraph from "./IssuerTrustGraph.js";
 
 export default class IssuerGraphBuilder {
-
     constructor() {
         this.visited = new Set();
         this.graph = new IssuerTrustGraph();

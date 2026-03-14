@@ -1,4 +1,4 @@
-import TokenResponse from "./TokenResponse";
+import TokenResponse from "./TokenResponse.js";
 
 class Mutex {
     constructor() {

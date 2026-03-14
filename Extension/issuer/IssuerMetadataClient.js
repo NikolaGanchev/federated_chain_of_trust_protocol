@@ -1,4 +1,4 @@
-import IssuerMetadata from "./IssuerMetadata";
+import IssuerMetadata from "./IssuerMetadata.js";
 
 export default class IssuerMetadataClient {
 

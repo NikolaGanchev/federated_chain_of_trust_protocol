@@ -1,4 +1,4 @@
-import TokenResponseStorage from "./response/TokenResponseStorage"
+import TokenResponseStorage from "./response/TokenResponseStorage.js"
 
 console.log("Hello")
 let pendingFctp = null;
@@ -35,7 +35,7 @@ chrome.webRequest.onHeadersReceived.addListener(
 
       if (!claim) return;
       
-      pendingFctp = { claim, issuers };
+      pendingFctp = { claim, issuers: fctpTrustees  };
       
       chrome.tabs.reload(details.tabId);
     }
@@ -53,7 +53,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     let claim = pendingFctp.claim
     let issuers = pendingFctp.issuers
-
+    let tokenResponse = null;
     for(let i = 0; i < issuers.length; i++) {   
       if(storage.length(issuers, claim) !== 0) {
         tokenResponse = storage.pop(issuers, claim);
