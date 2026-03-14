@@ -1,8 +1,9 @@
 export default class IssuerTrustGraph {
 
-    constructor() {
+    constructor(name) {
         this.nodes = new Map();
         this.edges = new Map();
+        this.name = name
     }
 
     addNode(metadata) {

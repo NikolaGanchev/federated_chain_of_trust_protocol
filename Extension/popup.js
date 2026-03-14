@@ -3,7 +3,6 @@ import IssuerTrustGraphStorage from "./issuer/graph/IssuerTrustGraphStorage";
 import TokenResponse from "./response/TokenResponse";
 import IssuerGraphBuilder from "./issuer/graph/IssuerGraphBuilder";
 
-let tokenResponses = await TokenResponseStorage.loadResponses()
 let truthGraphs = await IssuerTrustGraphStorage.loadGraphs()
 
 async function sendLoginForm(url) {
@@ -37,16 +36,12 @@ document.getElementById("login-form").addEventListener("submit", async function 
     try {
         const url = 'https://example.com/api/login';
         const result = await sendLoginForm(url);
-        const tokenResponseList = result.map(t => TokenResponse.fromJSON(t));
 
-        for (const response of tokenResponseList) {
-            if (!response.isExpired()) {
-                tokenResponses.set(response.username, response);
-            }
-        }
+        result.map(t => TokenResponse.fromJSON(t)).array.forEach(async item => {
+            await TokenResponseStorage.add(item);
+        });;
 
         truthGraphs.push(await new IssuerGraphBuilder(url).build())
-        await TokenResponseStorage.saveTokenResponses(tokenResponses)
     } catch (err) {
         console.error(err);
     }

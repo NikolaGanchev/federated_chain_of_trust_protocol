@@ -1,55 +1,194 @@
-class TokenResponse {
-    constructor({ token, issuer_id, claim, expires_at }) {
-        this.token = token;
-        this.issuerId = issuer_id;
-        this.claim = claim;
-        this.expiresAt = expires_at;
+import TokenResponse from "./TokenResponse";
+
+class Mutex {
+    constructor() {
+        this.locked = false;
+        this.waiters = [];
     }
 
-    static fromJSON(json) {
-        return new TokenResponse({
-            token: json.token,
-            issuer_id: json.issuer_id,
-            claim: json.claim,
-            expires_at: json.expires_at
+    async lock() {
+        if (!this.locked) {
+            this.locked = true;
+            return;
+        }
+        return new Promise(resolve => this.waiters.push(resolve));
+    }
+
+    unlock() {
+        if (this.waiters.length) {
+            const next = this.waiters.shift();
+            next();
+        } else {
+            this.locked = false;
+        }
+    }
+
+    async runExclusive(fn) {
+        await this.lock();
+        try {
+            return await fn();
+        } finally {
+            this.unlock();
+        }
+    }
+}
+
+export default class TokenResponseStorage {
+
+    static STORAGE_KEY = "ftp_token_store";
+
+    static #mutex = new Mutex();
+    static #loaded = false;
+
+    // Map<issuerId::claimType, TokenResponse[]>
+    static #tokens = new Map();
+
+    static #key(issuerId, claimType) {
+        return `${issuerId}::${claimType}`;
+    }
+
+    static async #ensureLoaded() {
+        if (this.#loaded) return;
+
+        const result = await chrome.storage.local.get(this.STORAGE_KEY);
+        const stored = result[this.STORAGE_KEY];
+
+        this.#tokens = new Map();
+
+        if (stored) {
+            for (const [key, list] of Object.entries(stored)) {
+                const tokens = [];
+
+                for (const value of list) {
+                    const token = TokenResponse.fromJSON(value);
+                    if (!token.isExpired()) {
+                        tokens.push(token);
+                    }
+                }
+
+                if (tokens.length) {
+                    this.#tokens.set(key, tokens);
+                }
+            }
+        }
+
+        this.#loaded = true;
+    }
+
+    static async #persist() {
+        const serialized = {};
+
+        for (const [key, tokens] of this.#tokens.entries()) {
+            serialized[key] = tokens.map(t => t.toJSON());
+        }
+
+        await chrome.storage.local.set({
+            [this.STORAGE_KEY]: serialized
         });
     }
 
-    isExpired(currentTime = Math.floor(Date.now() / 1000)) {
-        return currentTime >= this.expiresAt;
+    static async add(token) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(token.issuerId, token.claimType);
+
+            if (!this.#tokens.has(key)) {
+                this.#tokens.set(key, []);
+            }
+
+            this.#tokens.get(key).push(token);
+
+            await this.#persist();
+        });
     }
 
-    getIssuer() {
-        return this.issuerId;
+    static async peek(issuerId, claimType) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(issuerId, claimType);
+            const queue = this.#tokens.get(key);
+
+            if (!queue || queue.length === 0) return null;
+
+            return queue[0];
+        });
     }
 
-    getClaim() {
-        return this.claim;
+    static async pop(issuerId, claimType) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(issuerId, claimType);
+            const queue = this.#tokens.get(key);
+
+            if (!queue || queue.length === 0) return null;
+
+            const token = queue.shift();
+
+            if (queue.length === 0) {
+                this.#tokens.delete(key);
+            }
+
+            await this.#persist();
+
+            return token;
+        });
     }
 
-    getToken() {
-        return this.token;
+    static async remove(issuerId, claimType, predicate) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(issuerId, claimType);
+            const queue = this.#tokens.get(key);
+
+            if (!queue) return null;
+
+            const index = queue.findIndex(predicate);
+            if (index === -1) return null;
+
+            const removed = queue.splice(index, 1)[0];
+
+            if (queue.length === 0) {
+                this.#tokens.delete(key);
+            }
+
+            await this.#persist();
+
+            return removed;
+        });
     }
 
-    getExpiration() {
-        return this.expiresAt;
+    static async getAll(issuerId, claimType) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(issuerId, claimType);
+            const queue = this.#tokens.get(key);
+
+            if (!queue) return [];
+
+            return [...queue];
+        });
     }
 
-    toJSON() {
-        return {
-            token: this.token,
-            issuer_id: this.issuerId,
-            claim: this.claim,
-            expires_at: this.expiresAt
-        };
+    static async size(issuerId, claimType) {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+
+            const key = this.#key(issuerId, claimType);
+            const queue = this.#tokens.get(key);
+
+            return queue ? queue.length : 0;
+        });
     }
 
-    static async fromFetchResponse(response) {
-        if (!response.ok) {
-            throw new Error(`Exchange failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return TokenResponse.fromJSON(data);
+    static async keys() {
+        return this.#mutex.runExclusive(async () => {
+            await this.#ensureLoaded();
+            return [...this.#tokens.keys()];
+        });
     }
 }
