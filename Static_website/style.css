@@ -109,7 +109,6 @@ h5 {
     justify-content: center;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
                 box-shadow 0.4s ease;
 }
@@ -140,7 +139,7 @@ h5 {
 }
 
 .full-section.alt {
-    background-color: var(--seashell); 
+    background-color: var(--baby-blue-eyes); 
 }
 
 .section-content {
@@ -148,6 +147,55 @@ h5 {
     margin: 0 auto;
     padding: 0 20px;
     text-align: center;
+}
+
+.features {
+    max-width: 1100px;
+    margin: 80px auto;
+    padding: 0 20px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    gap: 30px;
+}
+
+.feature-card {
+    background: white;
+    padding: 35px 25px;
+    border-radius: 14px;
+    text-align: center;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+
+    transition: transform .35s ease,
+                box-shadow .35s ease,
+                background .35s ease;
+}
+
+.feature-card i {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: var(--midnight-blue);
+}
+
+.feature-card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 25px 40px rgba(0,0,0,0.12);
+    background: var(--celeste);
+}
+
+.feature-card:hover i {
+    transform: scale(1.2);
 }
 
 .section-content h2 {

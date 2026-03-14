@@ -1,136 +1,188 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Federated Chain of Trust</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
 
-<body>
-
+  <body>
     <header class="navbar">
-        <div class="logo">
-            <a href="#"><img src="Images/Logo.png" alt="Logo"></a>
-        </div>
+      <div class="logo">
+        <a href="#"><img src="Images/Logo.png" alt="Logo" /></a>
+      </div>
 
-        <nav class="nav-links">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="Papers.html">Papers</a></li>
-                <li><a href="AboutUs.html">About us</a></li>
-                <li><a href="Blank.html">Blank</a></li>
-            </ul>
-        </nav>
+      <nav class="nav-links">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="Papers.html">Papers</a></li>
+          <li><a href="AboutUs.html">About us</a></li>
+          <li><a href="Blank.html">Blank</a></li>
+        </ul>
+      </nav>
     </header>
 
     <main class="content-wrapper">
-        <h1>Federated Chain of Trust</h1>
-        <h5>
-            The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose, privacy-preserving framework
-            for identity and attribute verification across the internet. It enables any website to accept verified
-            claims — such as age, nationality, or membership — without implementing custom integrations against
-            government APIs, national ID systems, or third-party identity providers.
-        </h5>
+      <h1>Federated Chain of Trust</h1>
+      <h5>
+        The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose,
+        privacy-preserving framework for identity and attribute verification
+        across the internet. It enables any website to accept verified claims —
+        such as age, nationality, or membership — without implementing custom
+        integrations against government APIs, national ID systems, or
+        third-party identity providers.
+      </h5>
 
-        <div class="flow-container">
-            <div class="box local">
-                <div class="title">Local Issuer</div>
-                <div class="url">e.g. Blagoevgrad Municipality</div>
-                <div class="description">Knows your real identity. Mints your first token.</div>
-            </div>
-
-            <i class="fa-solid fa-angles-right"></i>
-
-            <div class="box national">
-                <div class="title">National Issuer</div>
-                <div class="url">e.g. Bulgaria</div>
-                <div class="description">Trusts local issuers. Upgrades the token.</div>
-            </div>
-
-            <i class="fa-solid fa-angles-right"></i>
-
-            <div class="box mega">
-                <div class="title">MegaIssuer</div>
-                <div class="url">e.g. megaissuer.com</div>
-                <div class="description">Top of chain. The only issuer the RP trusts.</div>
-            </div>
-
-            <i class="fa-solid fa-angles-right"></i>
-
-            <div class="box rp">
-                <div class="title">RP</div>
-                <div class="url">website.com</div>
-                <div class="description">Sees only MegaIssuer.</div>
-            </div>
+      <div class="flow-container">
+        <div class="box local">
+          <div class="title">Local Issuer</div>
+          <div class="url">e.g. Blagoevgrad Municipality</div>
+          <div class="description">
+            Knows your real identity. Mints your first token.
+          </div>
         </div>
-        <div id="visual1">
 
+        <i class="fa-solid fa-angles-right"></i>
+
+        <div class="box national">
+          <div class="title">National Issuer</div>
+          <div class="url">e.g. Bulgaria</div>
+          <div class="description">
+            Trusts local issuers. Upgrades the token.
+          </div>
         </div>
-       <section class="full-section">
-    <div class="section-content">
-        <h2 class="table-header">Supported Token Formats</h2>
-        <br>
-        <div class="table-container">
+
+        <i class="fa-solid fa-angles-right"></i>
+
+        <div class="box mega">
+          <div class="title">MegaIssuer</div>
+          <div class="url">e.g. megaissuer.com</div>
+          <div class="description">
+            Top of chain. The only issuer the RP trusts.
+          </div>
+        </div>
+
+        <i class="fa-solid fa-angles-right"></i>
+
+        <div class="box rp">
+          <div class="title">RP</div>
+          <div class="url">website.com</div>
+          <div class="description">Sees only MegaIssuer.</div>
+        </div>
+      </div>
+      <div id="visual1"></div>
+      <section class="full-section">
+        <div class="section-content">
+          <h2 class="table-header">Supported Token Formats</h2>
+          <br />
+          <div class="table-container">
             <table class="fancy-table">
-                <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Endpoints</th>
-                        <th>Stores</th>
-                        <th>Key actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="format-cell">Local Issuer</td>
-                        <td>Baseline mandatory format. Provides unlinkability between issuance and redemption.</td>
-                    </tr>
-                    <tr>
-                        <td class="format-cell">SD-JWT</td>
-                        <td>Used by eIDAS 2.0 wallets. Supports selective disclosure of claim attributes.</td>
-                    </tr>
-                    <tr>
-                        <td class="format-cell">mdoc / ISO 18013-5</td>
-                        <td>Mobile driving licence format. Used by Apple and Google Wallet.</td>
-                    </tr>
-                    <tr>
-                        <td class="format-cell">Non-blinded JWT</td>
-                        <td>For systems where auditability outweighs privacy. Must be documented by the issuer.</td>
-                    </tr>
-                    <tr>
-                        <td class="format-cell">Proof-of-work</td>
-                        <td>For anti-bot use cases. No identity claim; proves computational effort.</td>
-                    </tr>
-                </tbody>
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Endpoints</th>
+                  <th>Stores</th>
+                  <th>Key actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="format-cell">Local Issuer</td>
+                  <td>
+                    Baseline mandatory format. Provides unlinkability between
+                    issuance and redemption.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="format-cell">SD-JWT</td>
+                  <td>
+                    Used by eIDAS 2.0 wallets. Supports selective disclosure of
+                    claim attributes.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="format-cell">mdoc / ISO 18013-5</td>
+                  <td>
+                    Mobile driving licence format. Used by Apple and Google
+                    Wallet.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="format-cell">Non-blinded JWT</td>
+                  <td>
+                    For systems where auditability outweighs privacy. Must be
+                    documented by the issuer.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="format-cell">Proof-of-work</td>
+                  <td>
+                    For anti-bot use cases. No identity claim; proves
+                    computational effort.
+                  </td>
+                </tr>
+              </tbody>
             </table>
+          </div>
         </div>
-    </div>
+      </section>
+
+      <section class="features">
+  <div class="feature-card">
+    <i class="fa-solid fa-user-shield"></i>
+    <h2>Privacy by default</h2>
+    <p>
+      Verifying websites learn only the minimum necessary claim.
+      The origin issuer is never revealed.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <i class="fa-solid fa-plug"></i>
+    <h2>Zero integration cost</h2>
+    <p>
+      A website integrates once against the FCTP API and automatically
+      accepts tokens from any issuer.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <i class="fa-solid fa-network-wired"></i>
+    <h2>No mandatory root</h2>
+    <p>
+      There is no central authority. Any entity can be an issuer.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <i class="fa-solid fa-bolt"></i>
+    <h2>Single-hop exchange</h2>
+    <p>
+      A user exchanges their local token directly at the top-level issuer.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <i class="fa-solid fa-code-branch"></i>
+    <h2>Format agnostic</h2>
+    <p>
+      Existing identity systems plug in without reimplementing issuance.
+    </p>
+  </div>
+
+  <div class="feature-card">
+    <i class="fa-solid fa-chart-line"></i>
+    <h2>Scalable by design</h2>
+    <p>
+      No endpoint serves more than its own immediate relationships.
+    </p>
+  </div>
 </section>
-
-        <section class="full-section alt">
-            <div class="section-content">
-                <h2>Privacy by Design</h2>
-                <p>
-                    Only the required attribute is shared. Websites verify the issuer rather
-                    than storing or processing sensitive personal data.
-                </p>
-            </div>
-        </section>
-
-        <section class="full-section">
-            <div class="section-content">
-                <h2>Universal Verification</h2>
-                <p>
-                    Any website can accept verified attributes through a common protocol
-                    without custom integrations with governments or identity providers.
-                </p>
-            </div>
-        </section>
     </main>
-
-</body>
-
+  </body>
 </html>
