@@ -1,7 +1,7 @@
-import TokenResponseStorage from "./response/TokenResponseStorage";
-import IssuerTrustGraphStorage from "./issuer/graph/IssuerTrustGraphStorage";
-import TokenResponse from "./response/TokenResponse";
-import IssuerGraphBuilder from "./issuer/graph/IssuerGraphBuilder";
+import TokenResponseStorage from "./response/TokenResponseStorage.js";
+import IssuerTrustGraphStorage from "./issuer/graph/IssuerTrustGraphStorage.js";
+import TokenResponse from "./response/TokenResponse.js";
+import IssuerGraphBuilder from "./issuer/graph/IssuerGraphBuilder.js";
 
 let truthGraphs = await IssuerTrustGraphStorage.loadGraphs()
 
