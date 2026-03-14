@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "My Extension",
+  "description": "Basic Chrome extension skeleton",
+  "version": "1.0",
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+
+  "permissions": [],
+  "host_permissions": ["<all_urls>"]
+}
