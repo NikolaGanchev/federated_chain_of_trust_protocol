@@ -29,7 +29,7 @@ Age and identity verification on the internet is broken in two distinct ways:
 | Privacy by default | Verifying websites learn only the minimum necessary claim. The origin issuer is never revealed. |
 | Zero integration cost | A website integrates once against the FCTP API and automatically accepts tokens from any issuer in its trusted graph. |
 | No mandatory root | There is no central authority. Any entity can be an issuer. Trust is established by declaration. |
-| Single-hop exchange | A user exchanges their local token directly at the top-level issuer in one call, regardless of chain depth. |
+| Single-hop exchange | A user exchanges their local token directly at the target issuer in one call, regardless of chain depth. |
 | Format agnostic | Existing identity systems plug in at the trust layer without reimplementing issuance. |
 | Scalable by design | No endpoint serves more than its own immediate relationships. Load is bounded and predictable. |
 
@@ -52,7 +52,7 @@ Each node in the graph maintains two lists:
 
 * parents: the set of issuers that have declared trust in this node. Populated by the node operator's own configuration.
 
-This bidirectional awareness is essential. A leaf issuer (e.g. Sofia) needs to know who its parents are so a client can determine the path to the top-level issuers. Without the parents field, upward traversal would require scanning the entire graph.
+This bidirectional awareness is essential. A leaf issuer (e.g. Sofia) needs to know who its parents are so a client can determine the path to the target issuers. Without the parents field, upward traversal would require scanning the entire graph.
 
 ## **2.3 Single-Hop Exchange**
 
@@ -93,7 +93,7 @@ A single server may hold private keys and manage trust relationships for many in
 
 # **4\. Issuer Node Endpoints**
 
-Every FCTP-compliant issuer node MUST expose the following endpoints over HTTPS. There is no /trust\_path endpoint — each node serves only its own immediate relationships. Transitive graph knowledge is the responsibility of the node that needs it (i.e. a top-level issuer), built via background crawl.
+Every FCTP-compliant issuer node MUST expose the following endpoints over HTTPS. There is no /trust\_path endpoint — each node serves only its own immediate relationships. Transitive graph knowledge is the responsibility of the node that needs it, built via background crawl.
 
 ## **4.1  GET /.well-known/fctp-issuer**
 
@@ -111,7 +111,7 @@ Any Issuer MUST only trust children who issue the same or a stronger claim.
 
 ## **4.2 POST /exchange\_token**
 
-The core exchange endpoint. Accepts a token from any transitively trusted child issuer and returns a fresh token signed by this issuer. The client calls this endpoint only on the target (top-level) issuer — not on every intermediate node.
+The core exchange endpoint. Accepts a token from any transitively trusted child issuer and returns a fresh token signed by this issuer. The client calls this endpoint only on the target issuer — not on every intermediate node.
 
 | Request {   "child\_token":      "\<token bytes — format specified by child\_token\_type\>",   "child\_token\_type": "privacy-pass",   "child\_issuer\_id":  "https://sofia.bg",   "claim":            "nationality:BG" } Response 200 {   "token":      "\<fresh token signed by this issuer\>",   "token\_type": "privacy-pass",   "claim":      "nationality:BG",   "issuer\_id":  "https://megaissuer.com",   "expires\_at": 1717086400 } Response 403  (child\_issuer\_id not in transitive trust cache,                or token signature invalid, or claim mismatch) |
 | :---- |
@@ -140,7 +140,7 @@ Every issuer that acts as a trust root for one or more relying parties MUST main
 
 * Crawl is depth-first from direct children with cycle detection. Each node's TTL governs its own refresh frequency independently.
 
-* If a node is unreachable during crawl, retain the stale cache entry until 2x TTL, then remove it and treat as untrusted.
+* If an issuer is unreachable during crawl, retain the stale cache entry until 2x TTL, then remove it and treat as untrusted.
 
 * When a child is removed from the direct trust list, remove it and all nodes reachable only through it from the cache.
 
@@ -194,7 +194,7 @@ The client MUST NOT walk the trust chain manually by calling /exchange\_token on
 
 ## **7.3 Multiple Parents**
 
-A node may have multiple parents (e.g. Sofia trusted by both Bulgaria and a Balkans regional issuer). When the client needs to reach a specific target issuer, it consults the parents field of its current token's issuer to determine which parent leads toward the target. It picks the parent that is closer to the target in the graph and calls /exchange\_token on the target directly.
+An issuer may have multiple parents (e.g. Sofia trusted by both Bulgaria and a Balkans regional issuer). When the client needs to reach a specific target issuer, it consults the parents field of its current token's issuer to determine which parent leads toward the target. It picks the parent that is closer to the target in the graph and calls /exchange\_token on the target directly.
 
 ## **7.4 Per-Site Issuer Whitelist**
 
@@ -249,7 +249,7 @@ If a site trusts Issuer A and Issuer A trusts Issuer B, the site transitively ac
 
 If a child issuer becomes compromised, any parent removes it from its trust list. The background crawl then removes the child from the transitive trust cache within one TTL cycle. Subsequent /exchange\_token calls with tokens from that issuer return 403\.
 
-A node can also be made invisible by being omitted from a parent's trusts list — it does not appear in the crawl and is therefore unreachable from any RP that trusts that parent.
+An issuer can also be made invisible by being omitted from a parent's trusts list — it does not appear in the crawl and is therefore unreachable from any RP that trusts that parent.
 
 The child can also drop a parent. This is done passively. The child simply deletes and blacklists the parent from its trustee list that it returns /fctp-issuer. Then, clients, upon updating the cache, will not know that child tokens can be exchanged for parent tokens and in turn will not send child tokens to RPs requesting the dropped parent.
 
