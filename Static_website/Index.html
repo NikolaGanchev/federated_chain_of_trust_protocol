@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,67 +8,98 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
-<header class="navbar">
-    <div class="logo">
-       <a href="#"><img src="Images/Logo.png" alt="Logo"></a>
-    </div>
-
-    <nav class="nav-links">
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="Papers.html">Papers</a></li>
-            <li><a href="AboutUs.html">About us</a></li>
-            <li><a href="Blank.html">Blank</a></li>
-        </ul>
-    </nav>
-</header>
-
-<main class="content-wrapper">
-    <h1>Federated Chain of Trust</h1>
-    <h5>
-        The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose, privacy-preserving framework 
-        for identity and attribute verification across the internet. It enables any website to accept verified 
-        claims — such as age, nationality, or membership — without implementing custom integrations against 
-        government APIs, national ID systems, or third-party identity providers.
-    </h5>
-
-    <div class="flow-container">
-        <div class="box local">
-            <div class="title">Local Issuer</div>
-            <div class="url">e.g. city-clerk.bg</div>
-            <div class="description">Knows your real identity. Mints your first token.</div>
+    <header class="navbar">
+        <div class="logo">
+            <a href="#"><img src="Images/Logo.png" alt="Logo"></a>
         </div>
 
-       <i class="fa-solid fa-angles-right"></i>
+        <nav class="nav-links">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="Papers.html">Papers</a></li>
+                <li><a href="AboutUs.html">About us</a></li>
+                <li><a href="Blank.html">Blank</a></li>
+            </ul>
+        </nav>
+    </header>
 
-        <div class="box national">
-            <div class="title">National Issuer</div>
-            <div class="url">e.g. national.bg</div>
-            <div class="description">Trusts local issuers. Upgrades the token.</div>
+    <main class="content-wrapper">
+        <h1>Federated Chain of Trust</h1>
+        <h5>
+            The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose, privacy-preserving framework
+            for identity and attribute verification across the internet. It enables any website to accept verified
+            claims — such as age, nationality, or membership — without implementing custom integrations against
+            government APIs, national ID systems, or third-party identity providers.
+        </h5>
+
+        <div class="flow-container">
+            <div class="box local">
+                <div class="title">Local Issuer</div>
+                <div class="url">e.g. city-clerk.bg</div>
+                <div class="description">Knows your real identity. Mints your first token.</div>
+            </div>
+
+            <i class="fa-solid fa-angles-right"></i>
+
+            <div class="box national">
+                <div class="title">National Issuer</div>
+                <div class="url">e.g. national.bg</div>
+                <div class="description">Trusts local issuers. Upgrades the token.</div>
+            </div>
+
+            <i class="fa-solid fa-angles-right"></i>
+
+            <div class="box mega">
+                <div class="title">MegaIssuer</div>
+                <div class="url">e.g. megaissuer.com</div>
+                <div class="description">Top of chain. The only issuer the RP trusts.</div>
+            </div>
+
+            <i class="fa-solid fa-angles-right"></i>
+
+            <div class="box rp">
+                <div class="title">RP</div>
+                <div class="url">website.com</div>
+                <div class="description">Sees only MegaIssuer.</div>
+            </div>
         </div>
+        <div id="visual1">
 
-         <i class="fa-solid fa-angles-right"></i>
-
-        <div class="box mega">
-            <div class="title">MegaIssuer</div>
-            <div class="url">e.g. megaissuer.com</div>
-            <div class="description">Top of chain. The only issuer the RP trusts.</div>
         </div>
+        <section class="full-section">
+            <div class="section-content">
+                <h2>Decentralized Identity</h2>
+                <p>
+                    Users receive cryptographic tokens from trusted issuers rather than repeatedly
+                    submitting personal information to every service they use.
+                </p>
+            </div>
+        </section>
 
-         <i class="fa-solid fa-angles-right"></i>
+        <section class="full-section alt">
+            <div class="section-content">
+                <h2>Privacy by Design</h2>
+                <p>
+                    Only the required attribute is shared. Websites verify the issuer rather
+                    than storing or processing sensitive personal data.
+                </p>
+            </div>
+        </section>
 
-        <div class="box rp">
-            <div class="title">RP</div>
-            <div class="url">website.com</div>
-            <div class="description">Sees only MegaIssuer.</div>
-        </div>
-    </div>
-    <div id="visual1">
-
-    </div>
-</main>
-
+        <section class="full-section">
+            <div class="section-content">
+                <h2>Universal Verification</h2>
+                <p>
+                    Any website can accept verified attributes through a common protocol
+                    without custom integrations with governments or identity providers.
+                </p>
+            </div>
+        </section>
+    </main>
+    
 </body>
+
 </html>
