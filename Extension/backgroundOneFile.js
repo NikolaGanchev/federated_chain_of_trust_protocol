@@ -144,8 +144,6 @@ class TrustGraph {
 
 class TrustGraphBuilder {
   constructor() {
-    this.visited = new Set();
-    this.graph = new TrustGraph();
   }
 
   async build(startIssuerUrl) {
