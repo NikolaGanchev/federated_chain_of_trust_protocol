@@ -18,7 +18,7 @@ The protocol is designed to sit on top of existing identity infrastructure — i
 
 Age and identity verification on the internet is broken in two distinct ways:
 
-* Websites bear enormous implementation burden. Integrating even a handful of government identity providers requires managing separate APIs, compliance obligations, and legal agreements per jurisdiction.
+* Websites bear an enormous implementation burden. Integrating even a handful of government identity providers requires managing a list of separate APIs, compliance obligations, and legal agreements per jurisdiction.
 
 * Users repeat the same verification process dozens of times, uploading sensitive documents to unknown third parties with no control over what is stored or shared.
 
@@ -27,10 +27,10 @@ Age and identity verification on the internet is broken in two distinct ways:
 | Goal | Description |
 | :---- | :---- |
 | Privacy by default | Verifying websites learn only the minimum necessary claim. The origin issuer is never revealed. |
-| Zero integration cost | A website integrates once against the FCTP API and automatically accepts tokens from any issuer in its trusted graph. |
+| Minimal integration cost | A website integrates once against the FCTP API and automatically accepts tokens from any issuer in its trusted graph. |
 | No mandatory root | There is no central authority. Any entity can be an issuer. Trust is established by declaration. |
 | Single-hop exchange | A user exchanges their local token directly at the target issuer in one call, regardless of chain depth. |
-| Format agnostic | Existing identity systems plug in at the trust layer without reimplementing issuance. |
+| Format agnostic | Existing identity systems plug in at the trust layer without reimplementing the issuing process. |
 | Scalable by design | No endpoint serves more than its own immediate relationships. Load is bounded and predictable. |
 
 # **2\. Architecture Overview**
@@ -41,7 +41,7 @@ FCTP models the identity ecosystem as a directed trust graph. Each node is an is
 
 There is no mandatory root. Websites declare the set of issuers they trust directly. An issuer gains effective reach proportional to how many websites (directly or transitively) include it in their trust graph.
 
-|  *Example: A website trusts MegaIssuer. MegaIssuer trusts the EU federation. The EU federation trusts national issuers. A national issuer trusts regional clerks. A clerk verifies a physical ID and mints a token. That token, when presented to MegaIssuer, is valid at the website — but the website only ever sees a MegaIssuer-signed token.* |
+|  *Example: A website trusts MegaIssuer(ex. Cloudflare). MegaIssuer trusts the EU federation. The EU federation trusts national issuers. A national issuer trusts regional clerks. A clerk verifies a physical ID and mints a key. The key can then be used to mint a token from our local issuer. That token, when presented to MegaIssuer, is valid at the website — but the website only ever sees a MegaIssuer-signed token.* |
 | :---- |
 
 ## **2.2 Bidirectional Awareness: Children and Parents**
@@ -63,8 +63,6 @@ When a client holds a Sofia-issued token and needs a MegaIssuer token:
 * Client presents the Sofia token directly to MegaIssuer via /exchange\_token.
 
 * MegaIssuer verifies the token's signature against Sofia's public key (fetched from Sofia's /.well-known/FCTP-issuer).
-
-* MegaIssuer 
 
 * MegaIssuer issues a fresh token. Done — in one round trip.
 
