@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 5000;
+const PORT = 5001;
 
 // Mock data following your requested structure:
 // [{isText: false, content: "url"}, {isText: true, content: "title"}]
@@ -38,11 +38,48 @@ app.use((req, res, next) => {
 });
 
 app.get('/content', (req, res) => {
-  // To test your "forbidden content" error state, 
-  // you can uncomment the next line:
-  // return res.status(403).send('Forbidden');
+  if (req.headers["fctp-nonce"] && req.headers["fctp-token"] && req.headers["fctp-issuer"] && req.headers["fctp-token-type"]) {
+    let nonce = req.get("fctp-nonce");
+    let token = req.get("fctp-token");
+    let issuer = req.get("fctp-issuer");
+    if (issuer != "http://localhost:3005") {
+          res.status(403);
+      res.send("");
+      return;
+    }
+    let tokenType = req.get("fctp-token-typee");
 
-  res.json(mathArticles);
+    fetch("http://localhost:3005/verify_token", {
+      method: "POST",
+      body: {
+        nonce: nonce,
+        claim: "age_over_18",
+        token_type: tokenType,
+        token: token
+      }
+    }
+    )
+      .then((res1) => {
+        if (res1.ok) {
+          res.header("fctp-proof", res1.data.nonce_sig);
+          res.status(200);
+
+          res.json(mathArticles)
+          return;
+        } else {
+          res.status(403);
+          res.send("");
+        }
+      })
+      .catch(err => {
+          res.status(403);
+        res.send("");
+      })
+  }
+  res.header("fctp-claim", "age_over_18");
+  res.header("fctp-trustees", "http://localhost:3005");
+          res.status(403);
+  res.send("");
 });
 
 app.listen(PORT, () => {
