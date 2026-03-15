@@ -69,19 +69,18 @@ export function get_laptop() {
 export function get_cloud(font, txt) {
     const textGeometry = new TextGeometry(txt, {
         font: font,
-        size: 1.5,
+        size: 1,
         depth: 0.25,
         curveSegments: 12
     });
-    const textMaterial = new THREE.MeshPhongMaterial({
+    const textMaterial = new THREE.MeshBasicMaterial({
         color: "yellow"
     })
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.z = 0.2;
     textGeometry.computeBoundingBox();
     const boundingBox = textGeometry.boundingBox;
     const width = boundingBox.max.x - boundingBox.min.x;
-    text.position.x = -width / 2
+    text.position.set(-width / 2,-1.8,0.2);
 
     const cloudMaterial = new THREE.MeshPhongMaterial({
         color: "#e0f7ff",
@@ -143,7 +142,7 @@ export function get_server_rack() {
 
 export function get_token_press() {
     const pressMaterial1 = new THREE.MeshPhongMaterial({
-        color: "#3b4200"
+        color: "#898989"
     })
     const pressMaterial2 = new THREE.MeshPhongMaterial({
         color: "silver"
@@ -223,21 +222,109 @@ export function animate_token_press(tokenPress) {
         repeat: -1
     });
 
-    tl1.to(tokenPress.getObjectByName("press").position, { y: 4.9, duration: 1.5, ease: "sine.inOut" })
-        .to(tokenPress.getObjectByName("rod").scale, { y: 6.75, duration: 1.5, ease: "sine.inOut" }, "0")
-        .to(tokenPress.getObjectByName("rod").position, { y: 6.85, duration: 1.5, ease: "sine.inOut" }, "0")
+    tl1.to(tokenPress.getObjectByName("press").position, { y: 4.9, duration: 1.2, ease: "sine.inOut" })
+        .to(tokenPress.getObjectByName("rod").scale, { y: 6.75, duration: 1.2, ease: "sine.inOut" }, "0")
+        .to(tokenPress.getObjectByName("rod").position, { y: 6.85, duration: 1.2, ease: "sine.inOut" }, "0")
         .to(tokenPress.getObjectByName("rawToken"), { visible: false })
         .add("lift", "+=0.1")
-        .to(tokenPress.getObjectByName("press").position, { y: 7.75, duration: 1.5, ease: "sine.inOut" }, "lift")
-        .to(tokenPress.getObjectByName("rod").scale, { y: 1, duration: 1.5, ease: "sine.inOut" }, "lift")
-        .to(tokenPress.getObjectByName("rod").position, { y: 8.25, duration: 1.5, ease: "sine.inOut" }, "lift")
+        .to(tokenPress.getObjectByName("press").position, { y: 7.75, duration: 1.2, ease: "sine.inOut" }, "lift")
+        .to(tokenPress.getObjectByName("rod").scale, { y: 1, duration: 1.2, ease: "sine.inOut" }, "lift")
+        .to(tokenPress.getObjectByName("rod").position, { y: 8.25, duration: 1.2, ease: "sine.inOut" }, "lift")
         .add("plateGoesDown", "-=0.75")
-        .to(tokenPress.getObjectByName("plate").position, { y: 1, duration: 2, ease: "back.in" }, "plateGoesDown")
+        .to(tokenPress.getObjectByName("plate").position, { y: 1.001, duration: 2, ease: "back.in" }, "plateGoesDown")
         .to(tokenPress.getObjectByName("token").position, { y: 1.8, duration: 2.24, ease: "back.in" }, "plateGoesDown")
         .to(tokenPress.getObjectByName("rawToken").position, { y: 1.8, duration: 2 }, "plateGoesDown")
         .to(tokenPress.getObjectByName("rawToken"), { visible: true })
         .to(tokenPress.getObjectByName("token"), { visible: false })
         .add("plateGoesUp")
-        .to(tokenPress.getObjectByName("plate").position, { y: 3.5, duration: 1.5, ease: "back.out" }, "plateGoesUp")
-        .to(tokenPress.getObjectByName("rawToken").position, { y: 4.6, duration: 1.5, ease: "back.out" }, "plateGoesUp+0.1")
+        .to(tokenPress.getObjectByName("plate").position, { y: 3.5, duration: 1.3, ease: "back.out" }, "plateGoesUp")
+        .to(tokenPress.getObjectByName("rawToken").position, { y: 4.6, duration: 1.3, ease: "back.out" }, "plateGoesUp+0.05")
+}
+
+export function get_cylinder_dotted_line(start, end, radius, gap, color) 
+{
+    const cylinderHeight = radius * 2;
+    const stepDistance = cylinderHeight + gap;
+    const totalDistance = start.distanceTo(end);
+    const direction = new THREE.Vector3().subVectors(end, start).normalize();
+    const dotCount = Math.floor(totalDistance / stepDistance) + 1;
+    
+    const geometry = new THREE.CylinderGeometry(radius, radius, cylinderHeight, 16);
+    // Base color must be white so the instance colors aren't tinted
+    const material = new THREE.MeshStandardMaterial({ color: 0xffffff }); 
+    
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, dotCount);
+    const dummy = new THREE.Object3D();
+    
+    const up = new THREE.Vector3(0, 1, 0);
+    dummy.quaternion.setFromUnitVectors(up, direction);
+    
+    // Default color for the line when no signal is passing
+    const defaultColor = color //new THREE.Color(0x222222); // Dark Gray
+    
+    for (let i = 0; i < dotCount; i++) {
+        // 1. Serialize Position
+        const currentDistance = i * stepDistance;
+        dummy.position.copy(start).addScaledVector(direction, currentDistance);
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(i, dummy.matrix);
+        
+        // 2. Serialize Color (Individually addressable)
+        instancedMesh.setColorAt(i, defaultColor);
+    }
+    
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    // Tell Three.js we added instance colors
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true; 
+    instancedMesh.computeBoundingSphere();
+    
+    return instancedMesh;
+}
+
+export function animateSignal(signalLine, baseColor, signalColor, repeat)
+{
+const dotCount = signalLine.count;
+const tailLength = 10;
+const tempColor = new THREE.Color();
+
+// 3. Create a proxy object for GSAP to animate
+const signalAnim = { headPosition: -tailLength };
+let prevPosition = signalAnim.headPosition;
+
+// 3. Create the Reversible GSAP Tween
+const signalTween = gsap.to(signalAnim, {
+    headPosition: dotCount + tailLength, // Travel entirely past the end
+    duration: 2.0,
+    ease: "none",
+    repeat: repeat, 
+    yoyo: true, 
+
+    onUpdate: () => {
+        const current = signalAnim.headPosition;
+        
+        // Determine direction: 1 for forward, -1 for backward
+        const direction = current >= prevPosition ? 1 : -1;
+        prevPosition = current;
+
+        for (let i = 0; i < dotCount; i++) {
+            // Flip the tail math based on direction
+            // Forward: tail is at lower index. Backward: tail is at higher index.
+            const distanceToHead = direction === 1 
+                ? current - i 
+                : i - current;
+            
+            if (distanceToHead >= 0 && distanceToHead < tailLength) {
+                const intensity = 1.0 - (distanceToHead / tailLength);
+                tempColor.copy(baseColor).lerp(signalColor, intensity);
+            } else {
+                tempColor.copy(baseColor);
+            }
+            
+            signalLine.setColorAt(i, tempColor);
+        }
+        
+        signalLine.instanceColor.needsUpdate = true;
+    }
+});
+
 }
