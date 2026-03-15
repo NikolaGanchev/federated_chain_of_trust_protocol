@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hierarchical Graph</title>
+<style>
+  /* Container and basic layout */
+  .tree {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    font-family: sans-serif;
+  }
+
+  .tree ul {
+    padding-top: 20px;
+    position: relative;
+    display: flex;
+    padding-left: 0;
+  }
+
+  .tree li {
+    list-style-type: none;
+    position: relative;
+    padding: 20px 10px 0 10px;
+    text-align: center;
+  }
+
+  /* Connecting lines */
+  .tree li::before, .tree li::after {
+    content: '';
+    position: absolute; top: 0; right: 50%;
+    border-top: 2px solid #000;
+    width: 50%; height: 20px;
+  }
+
+  .tree li::after {
+    right: auto; left: 50%;
+    border-left: 2px solid #000;
+  }
+
+  /* Cleanup for solitary and edge nodes */
+  .tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+  }
+  
+  .tree li:only-child { 
+    padding-top: 0;
+  }
+
+  .tree li:first-child::before, .tree li:last-child::after {
+    border: 0 none;
+  }
+
+  .tree li:last-child::before {
+    border-right: 2px solid #000;
+  }
+
+  /* Vertical lines pointing down to children */
+  .tree ul ul::before {
+    content: '';
+    position: absolute; top: 0; left: 50%;
+    border-left: 2px solid #000;
+    width: 0; height: 20px;
+    margin-left: -1px; /* Centers the 2px border */
+  }
+
+  /* Node styling (ovals) */
+  .tree li div {
+    border: 2px solid #000;
+    padding: 15px 30px;
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    border-radius: 50px; /* Creates the oval shape */
+    background-color: #fff;
+    font-size: 1.2rem;
+  }
+  
+  /* Adding downward arrows using pseudo-elements on the nodes */
+  .tree ul ul li div {
+      position: relative;
+  }
+  
+  .tree ul ul li div::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      margin-left: -6px;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid #000;
+  }
+  
+  /* Adjusting the specific layout for the drawing's diagonal arrow representation */
+  .tree ul ul ul li div::before {
+      top: -20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="tree">
+  <ul>
+    <li>
+      <div>Europe</div>
+      <ul>
+        <li>
+          <div>Bulgaria</div>
+          <ul>
+            <li><div>Petrich</div></li>
+            <li><div>Sofia</div></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+</body>
+</html>

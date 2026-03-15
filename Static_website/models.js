@@ -80,7 +80,7 @@ export function get_cloud(font, txt) {
     textGeometry.computeBoundingBox();
     const boundingBox = textGeometry.boundingBox;
     const width = boundingBox.max.x - boundingBox.min.x;
-    text.position.set(-width / 2,-1.8,0.2);
+    text.position.set(-width / 2, -1.8, 0.2);
 
     const cloudMaterial = new THREE.MeshPhongMaterial({
         color: "#e0f7ff",
@@ -241,25 +241,24 @@ export function animate_token_press(tokenPress) {
         .to(tokenPress.getObjectByName("rawToken").position, { y: 4.6, duration: 1.3, ease: "back.out" }, "plateGoesUp+0.05")
 }
 
-export function get_cylinder_dotted_line(start, end, radius, gap, color) 
-{
+export function get_cylinder_dotted_line(start, end, radius, gap, color) {
     const cylinderHeight = radius * 2;
     const stepDistance = cylinderHeight + gap;
     const totalDistance = start.distanceTo(end);
     const direction = new THREE.Vector3().subVectors(end, start).normalize();
     const dotCount = Math.floor(totalDistance / stepDistance) + 1;
-    
+
     const geometry = new THREE.CylinderGeometry(radius, radius, cylinderHeight, 16);
-    const material = new THREE.MeshStandardMaterial({ color: 0xffffff }); 
-    
+    const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
     const instancedMesh = new THREE.InstancedMesh(geometry, material, dotCount);
     const dummy = new THREE.Object3D();
-    
+
     const up = new THREE.Vector3(0, 1, 0);
     dummy.quaternion.setFromUnitVectors(up, direction);
-    
+
     const defaultColor = color
-    
+
     for (let i = 0; i < dotCount; i++) {
         const currentDistance = i * stepDistance;
         dummy.position.copy(start).addScaledVector(direction, currentDistance);
@@ -267,52 +266,93 @@ export function get_cylinder_dotted_line(start, end, radius, gap, color)
         instancedMesh.setMatrixAt(i, dummy.matrix);
         instancedMesh.setColorAt(i, defaultColor);
     }
-    
+
     instancedMesh.instanceMatrix.needsUpdate = true;
-    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true; 
+    if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
     instancedMesh.computeBoundingSphere();
-    
+
     return instancedMesh;
 }
 
-export function animateSignal(signalLine, baseColor, signalColor, repeat, yoyo)
-{
-const dotCount = signalLine.count;
-const tailLength = 10;
-const tempColor = new THREE.Color();
+export function animateSignal(signalLine, baseColor, signalColor, repeat, yoyo) {
+    const dotCount = signalLine.count;
+    const tailLength = 10;
+    const tempColor = new THREE.Color();
 
-const signalAnim = { headPosition: -tailLength };
-let prevPosition = signalAnim.headPosition;
+    const signalAnim = { headPosition: -tailLength };
+    let prevPosition = signalAnim.headPosition;
 
-const signalTween = gsap.to(signalAnim, {
-    headPosition: dotCount + tailLength,
-    duration: 2.0,
-    ease: "none",
-    repeat: repeat, 
-    yoyo: yoyo, 
+    const signalTween = gsap.to(signalAnim, {
+        headPosition: dotCount + tailLength,
+        duration: 2.0,
+        ease: "none",
+        repeat: repeat,
+        yoyo: yoyo,
 
-    onUpdate: () => {
-        const current = signalAnim.headPosition;
-        const direction = current >= prevPosition ? 1 : -1;
-        prevPosition = current;
+        onUpdate: () => {
+            const current = signalAnim.headPosition;
+            const direction = current >= prevPosition ? 1 : -1;
+            prevPosition = current;
 
-        for (let i = 0; i < dotCount; i++) {
-            const distanceToHead = direction === 1 
-                ? current - i 
-                : i - current;
-            
-            if (distanceToHead >= 0 && distanceToHead < tailLength) {
-                const intensity = 1.0 - (distanceToHead / tailLength);
-                tempColor.copy(baseColor).lerp(signalColor, intensity);
-            } else {
-                tempColor.copy(baseColor);
+            for (let i = 0; i < dotCount; i++) {
+                const distanceToHead = direction === 1
+                    ? current - i
+                    : i - current;
+
+                if (distanceToHead >= 0 && distanceToHead < tailLength) {
+                    const intensity = 1.0 - (distanceToHead / tailLength);
+                    tempColor.copy(baseColor).lerp(signalColor, intensity);
+                } else {
+                    tempColor.copy(baseColor);
+                }
+
+                signalLine.setColorAt(i, tempColor);
             }
-            
-            signalLine.setColorAt(i, tempColor);
-        }
-        
-        signalLine.instanceColor.needsUpdate = true;
-    }
-});
 
+            signalLine.instanceColor.needsUpdate = true;
+        }
+    });
+
+}
+
+export function get_padlock() {
+    const bodyMaterial = new THREE.MeshStandardMaterial({
+        color: "pink",
+        metalness: 0.8,
+        roughness: 0.3
+    });
+
+    const shackleMaterial = new THREE.MeshStandardMaterial({
+        color: 0xcccccc,
+        metalness: 0.9,
+        roughness: 0.2
+    });
+
+    const padlockGroup = new THREE.Group();
+    const bodyGeom = new THREE.BoxGeometry(2, 1.5, 1);
+    const bodyMesh = new THREE.Mesh(bodyGeom, bodyMaterial);
+    padlockGroup.add(bodyMesh);
+
+    const shackleGroup = new THREE.Group();
+
+   shackleGroup.position.set(-0.6, 1.25, 0);
+
+    const leftLegGeom = new THREE.CylinderGeometry(0.15, 0.15, 1.5, 16);
+    const leftLeg = new THREE.Mesh(leftLegGeom, shackleMaterial);
+    leftLeg.position.set(0, -0.25, 0);
+    shackleGroup.add(leftLeg);
+
+    const rightLegGeom = new THREE.CylinderGeometry(0.15, 0.15, 1.5, 16);
+    const rightLeg = new THREE.Mesh(rightLegGeom, shackleMaterial);
+    rightLeg.position.set(1.2, -0.25, 0);
+    shackleGroup.add(rightLeg);
+
+    const archGeom = new THREE.TorusGeometry(0.6, 0.15, 16, 32, Math.PI);
+    const arch = new THREE.Mesh(archGeom, shackleMaterial);
+    arch.position.set(0.6, 0.5, 0);
+    shackleGroup.add(arch);
+
+    padlockGroup.add(shackleGroup);
+
+    return padlockGroup;
 }

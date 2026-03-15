@@ -22,7 +22,7 @@ scene.background = new THREE.Color("#134b67")
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minDistance = 5;
-controls.maxDistance = 30;
+controls.maxDistance = 50;
 controls.enablePan = false;
 controls.target.set(10,5,-5);
 controls.update();
@@ -118,13 +118,36 @@ const pressLaptopLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(-8,2,0
 const laptopServerRackLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(29,1,-1.8), new THREE.Vector3(20, 4.5, -20), 0.2 , 0.5, new THREE.Color("#fff"));
 const serverRackCloudLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(0,8,-20), new THREE.Vector3(20, 4.5, -20), 0.2 , 0.5, new THREE.Color("#fff"));
 const pressCloudLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(-2,6,-20), new THREE.Vector3(-10, 2, 0), 0.2 , 0.5, new THREE.Color("#fff"));
-scene.add(pressLaptopLine, laptopServerRackLine, serverRackCloudLine, pressCloudLine)
+const extensionLine1 = MODELS.get_cylinder_dotted_line(new THREE.Vector3(36, 2, 0), new THREE.Vector3(31,0,-1), 0.2 , 0.5, new THREE.Color("#fff"))
+scene.add(pressLaptopLine, laptopServerRackLine, serverRackCloudLine, pressCloudLine, extensionLine1)
+
+const padlockGroup = MODELS.get_padlock();
+padlockGroup.scale.set(1.2,1.2,1.2)
+padlockGroup.position.set(36, 2, 0)
+scene.add(padlockGroup)
+
+const textPadlockGeometry = new TextGeometry("Extension", {
+  font: font,
+  size: 0.8,
+  depth: 0.2,
+  curveSegments: 12
+});
+
+const textPadlock = new THREE.Mesh(textPadlockGeometry, textMaterial);
+//padlockGroup.add(textPadlock)
+textPadlockGeometry.computeBoundingBox();
+const boundingPadlock = textPadlockGeometry.boundingBox;
+const widthPadlock = boundingPadlock.max.x - boundingPadlock.min.x;
+textPadlock.position.set(-widthPadlock / 2 + 36, -1.8 + 2, 0 );
+scene.add(textPadlock)
+
+gsap.to(padlockGroup.rotation, {duration: 2, y: Math.PI*2, repeat: -1, ease:"none"})
 
 MODELS.animateSignal(pressLaptopLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
 MODELS.animateSignal(laptopServerRackLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
 MODELS.animateSignal(serverRackCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
 MODELS.animateSignal(pressCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
-
+MODELS.animateSignal(extensionLine1, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
 // let pi = {value: 0};
 // gsap.to(pi, {
 //   duration: 6, 
