@@ -275,7 +275,7 @@ export function get_cylinder_dotted_line(start, end, radius, gap, color)
     return instancedMesh;
 }
 
-export function animateSignal(signalLine, baseColor, signalColor, repeat)
+export function animateSignal(signalLine, baseColor, signalColor, repeat, yoyo)
 {
 const dotCount = signalLine.count;
 const tailLength = 10;
@@ -289,7 +289,7 @@ const signalTween = gsap.to(signalAnim, {
     duration: 2.0,
     ease: "none",
     repeat: repeat, 
-    yoyo: true, 
+    yoyo: yoyo, 
 
     onUpdate: () => {
         const current = signalAnim.headPosition;

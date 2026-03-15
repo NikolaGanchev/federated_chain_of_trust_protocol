@@ -6,12 +6,13 @@ import { gsap } from "gsap";
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 
-const container = document.getElementById("scene-container");
+const container = document.getElementById("visual1");
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-camera.position.set(0, 15, 0)
-//camera.lookAt(0,15,5);
+const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight);
+camera.position.set(10, 12, 25)
+camera.lookAt(10,5,-5);
+
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
@@ -20,7 +21,21 @@ container.appendChild(renderer.domElement);
 scene.background = new THREE.Color("#134b67")
 
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.minDistance = 5;
+controls.maxDistance = 30;
+controls.enablePan = false;
+controls.target.set(10,5,-5);
 controls.update();
+
+const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+        const width = entry.contentRect.width;
+        const height = entry.contentRect.height;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+    }
+});
 
 const ambientLight = new THREE.AmbientLight('white')
 scene.add(ambientLight)
@@ -105,10 +120,10 @@ const serverRackCloudLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(0,
 const pressCloudLine = MODELS.get_cylinder_dotted_line(new THREE.Vector3(-2,6,-20), new THREE.Vector3(-10, 2, 0), 0.2 , 0.5, new THREE.Color("#fff"));
 scene.add(pressLaptopLine, laptopServerRackLine, serverRackCloudLine, pressCloudLine)
 
-MODELS.animateSignal(pressLaptopLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1)
-MODELS.animateSignal(laptopServerRackLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1)
-MODELS.animateSignal(serverRackCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1)
-MODELS.animateSignal(pressCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1)
+MODELS.animateSignal(pressLaptopLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
+MODELS.animateSignal(laptopServerRackLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
+MODELS.animateSignal(serverRackCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
+MODELS.animateSignal(pressCloudLine, new THREE.Color("#a2a2a2"), new THREE.Color("#fff"), -1, true)
 
 // let pi = {value: 0};
 // gsap.to(pi, {
