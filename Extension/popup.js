@@ -29,6 +29,6 @@ document.getElementById("get-token").addEventListener("click", async function (e
             payload: response
         });
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
 });
