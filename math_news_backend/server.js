@@ -51,12 +51,12 @@ app.get('/content', (req, res) => {
 
     fetch("http://localhost:3005/verify_token", {
       method: "POST",
-      body: {
+      body: JSON.stringify({
         nonce: nonce,
         claim: "age_over_18",
         token_type: tokenType,
         token: token
-      }
+      })
     }
     )
       .then((res1) => {
