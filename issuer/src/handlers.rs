@@ -178,11 +178,11 @@ pub async fn issue_token(
     }
     let (token, expires_at) = issue_jwt(&state, &payload.claim, "user")?;
     tracing::info!("{}: minted leaf token for claim '{}'", state.issuer_id, payload.claim);
-    Ok(Json(serde_json::json!({
-        "token":      [token],
+    Ok(Json(serde_json::json!([{
+        "token":      token,
         "token_type": "jwt",
         "issuer_id":  state.issuer_id,
         "claim":      payload.claim,
         "expires_at": expires_at,
-    })))
+    }])))
 }
