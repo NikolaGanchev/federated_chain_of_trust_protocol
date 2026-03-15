@@ -30,7 +30,6 @@ body {
     color: #444;
 }
 
-/* --- Table Styling --- */
 .table-wrapper {
     background: white;
     border-radius: 12px;
@@ -57,7 +56,6 @@ body {
 .col-num { width: 50px; }
 .col-step { width: 250px; }
 
-/* Step Number Badges */
 .step-badge {
     display: inline-block;
     width: 28px;
@@ -70,7 +68,6 @@ body {
     font-weight: bold;
 }
 
-/* Metadata styling */
 small {
     color: #666;
     font-family: monospace;

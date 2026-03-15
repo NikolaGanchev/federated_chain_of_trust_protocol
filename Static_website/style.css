@@ -1,4 +1,3 @@
-/* --- Color Palette --- */
 :root {
     --seashell: #FFEDE1;
     --baby-powder: #F9FBF2;
@@ -7,7 +6,6 @@
     --midnight-blue: #0E1C36;
 }
 
-/* --- Reset & Base Styles --- */
 html, body {
     margin: 0;
     padding: 0;
@@ -63,7 +61,6 @@ body {
     color: white;
 }
 
-/* --- Main Layout --- */
 .content-wrapper {
     width: 100%;
     margin: 0; 
@@ -87,7 +84,6 @@ h5 {
     padding: 0 20px;
 }
 
-/* --- Flow Chart / Boxes --- */
 .flow-container {
     display: flex;
     align-items: center;
@@ -208,7 +204,6 @@ h5 {
     color: #444;
 }
 
-/* --- Visual Container --- */
 #visual1 {
     width: 90%;
     max-width: 800px;
@@ -226,7 +221,6 @@ h5 {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-/* --- Responsiveness --- */
 @media (max-width: 850px) {
     .flow-container {
         flex-direction: column;
@@ -246,8 +240,6 @@ h5 {
     .nav-links ul { gap: 20px; }
 }
 
-/* --- Table Section Styling --- */
-
 .table-header {
     text-align: left;
     color: var(--midnight-blue);
@@ -259,7 +251,7 @@ h5 {
 .table-container {
     width: 100%;
     margin-top: 20px;
-    overflow-x: auto; /* Scrollable on mobile */
+    overflow-x: auto;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     background: white;
@@ -272,7 +264,6 @@ h5 {
     font-size: 1rem;
 }
 
-/* Header Styling */
 .fancy-table thead tr {
     background-color: var(--midnight-blue);
     color: white;
@@ -285,7 +276,6 @@ h5 {
     padding: 18px 25px;
 }
 
-/* Row Borders and Transitions */
 .fancy-table tbody tr {
     border-bottom: 1px solid #eee;
     transition: background-color 0.2s ease, transform 0.2s ease;
@@ -295,13 +285,11 @@ h5 {
     border-bottom: 2px solid var(--midnight-blue);
 }
 
-/* Hover Effect */
 .fancy-table tbody tr:hover {
-    background-color: rgba(175, 203, 255, 0.15); /* Subtle baby-blue highlight */
+    background-color: rgba(175, 203, 255, 0.15);
     cursor: default;
 }
 
-/* Specific Column Styling */
 .format-cell {
     font-weight: 700;
     color: var(--midnight-blue);
@@ -309,7 +297,6 @@ h5 {
     white-space: nowrap;
 }
 
-/* --- Mobile Tweak --- */
 @media (max-width: 768px) {
     .format-cell {
         width: auto;

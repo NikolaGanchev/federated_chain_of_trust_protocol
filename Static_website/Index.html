@@ -79,56 +79,6 @@
       <section class="full-section">
         <div class="section-content">
           <h2 class="table-header">Supported Token Formats</h2>
-          <br />
-          <div class="table-container">
-            <table class="fancy-table">
-              <thead>
-                <tr>
-                  <th>Service</th>
-                  <th>Endpoints</th>
-                  <th>Stores</th>
-                  <th>Key actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="format-cell">Local Issuer</td>
-                  <td>
-                    Baseline mandatory format. Provides unlinkability between
-                    issuance and redemption.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="format-cell">SD-JWT</td>
-                  <td>
-                    Used by eIDAS 2.0 wallets. Supports selective disclosure of
-                    claim attributes.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="format-cell">mdoc / ISO 18013-5</td>
-                  <td>
-                    Mobile driving licence format. Used by Apple and Google
-                    Wallet.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="format-cell">Non-blinded JWT</td>
-                  <td>
-                    For systems where auditability outweighs privacy. Must be
-                    documented by the issuer.
-                  </td>
-                </tr>
-                <tr>
-                  <td class="format-cell">Proof-of-work</td>
-                  <td>
-                    For anti-bot use cases. No identity claim; proves
-                    computational effort.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
       </section>
 
@@ -163,7 +113,7 @@
     <i class="fa-solid fa-bolt"></i>
     <h2>Single-hop exchange</h2>
     <p>
-      A user exchanges their local token directly at the top-level issuer.
+      A user exchanges their local token directly at the target issuer.
     </p>
   </div>
 
