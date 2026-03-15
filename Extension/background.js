@@ -1,8 +1,6 @@
-import TokenResponseStorage from "./response/TokenResponseStorage.js";
+import { tokenStore as storage } from "./response/TokenResponsesStore.js";
 
 console.log("FCTP Background Service Worker Initialized");
-
-const storage = new TokenResponseStorage();
 
 const activeChallenges = new Map();
 let nextRuleId = 1;
