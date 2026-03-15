@@ -1,3 +1,5 @@
+import IssuerMetadata from "../IssuerMetadata.js";
+
 export default class TrustGraph {
 
   constructor(startIssuerUrl) {

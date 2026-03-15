@@ -1,3 +1,5 @@
+import TokenResponse from "../response/TokenResponse.js";
+
 export default class TokenExchangeClient {
 
   constructor(baseUrl) {
@@ -19,11 +21,15 @@ export default class TokenExchangeClient {
       })
     });
 
+    console.log(response);
+
     if (!response.ok) {
       throw new Error(`Token exchange failed: ${response.status}`);
     }
 
     const json = await response.json();
+
+    console.log(json);
 
     return TokenResponse.fromJSON(json);
   }

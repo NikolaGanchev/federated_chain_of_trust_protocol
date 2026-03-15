@@ -38,49 +38,49 @@ app.use((req, res, next) => {
 });
 
 app.get('/content', (req, res) => {
-  if (req.headers["fctp-nonce"] && req.headers["fctp-token"] && req.headers["fctp-issuer"] && req.headers["fctp-token-type"]) {
-    let nonce = req.get("fctp-nonce");
-    let token = req.get("fctp-token");
-    let issuer = req.get("fctp-issuer");
-    if (issuer != "http://localhost:3005") {
-          res.status(403);
-      res.send("");
-      return;
-    }
-    let tokenType = req.get("fctp-token-typee");
-
-    fetch("http://localhost:3005/verify_token", {
-      method: "POST",
-      body: JSON.stringify({
-        nonce: nonce,
-        claim: "age_over_18",
-        token_type: tokenType,
-        token: token
-      })
-    }
-    )
-      .then((res1) => {
-        if (res1.ok) {
-          res.header("fctp-proof", res1.data.nonce_sig);
-          res.status(200);
-
-          res.json(mathArticles)
-          return;
-        } else {
-          res.status(403);
-          res.send("");
-        }
-      })
-      .catch(err => {
-          res.status(403);
-        res.send("");
-      })
+  if (
+    !req.headers["fctp-nonce"] || 
+    !req.headers["fctp-token"] || 
+    !req.headers["fctp-issuer"] || 
+    !req.headers["fctp-token-type"]
+  ) {
+    res.header("fctp-claim", "age_over_18");
+    res.header("fctp-trustees", "http://localhost:3005");
+    return res.status(403).send("");
   }
-  res.header("fctp-claim", "age_over_18");
-  res.header("fctp-trustees", "http://localhost:3005");
-          res.status(403);
-  res.send("");
-});
+  let nonce = req.get("fctp-nonce");
+  let token = req.get("fctp-token");
+  let issuer = req.get("fctp-issuer");
+  let tokenType = req.get("fctp-token-type");
+
+  if (issuer !== "http://localhost:3005") {
+    return res.status(403).send("");
+  }
+
+  fetch("http://localhost:3005/verify_token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nonce: nonce,
+      claim: "age_over_18",
+      token_type: tokenType,
+      token: token
+    })
+  })
+    .then(async (res1) => {
+      if (res1.ok) {
+        const data = await res1.json(); 
+        
+        res.header("fctp-proof", data.nonce_sig);
+        return res.status(200).json(mathArticles);
+      } else {
+        return res.status(403).send("");
+      }
+    })
+    .catch((err) => {
+      return res.status(403).send("");
+    });
+  });
 
 app.listen(PORT, () => {
   console.log(`Math Backend running at http://localhost:${PORT}`);

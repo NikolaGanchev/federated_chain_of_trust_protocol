@@ -18,10 +18,11 @@ document.getElementById("get-token").addEventListener("click", async function (e
                 title: "Could not get token from issuer",
                 message: "Could not get token from issuer " + "http://localhost:3001/issue_token"
             })
+            console.log("not ok")
             return;
         }
         let response = await result.json();
-        console.log(response);
+        console.log("Response" + response);
 
         chrome.runtime.sendMessage({
             type: "SEND_JSON",
