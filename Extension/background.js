@@ -72,7 +72,9 @@ chrome.webRequest.onHeadersReceived.addListener(
               type: "modifyHeaders",
               requestHeaders: [
                 { header: "FCTP-NONCE", operation: "set", value: nonce },
-                { header: "FCTP-TOKEN", operation: "set", value: tokenResponse.token }
+                { header: "FCTP-TOKEN", operation: "set", value: tokenResponse.token },
+                { header: "FCTP-ISSUER", operation: "set", value: tokenResponse.issuer_id },
+                { header: "FCTP-TOKEN-TYPE", operation: "set", value: tokenResponse.token_type },
               ]
             },
             condition: {
