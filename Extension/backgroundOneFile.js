@@ -682,14 +682,43 @@ async function giveTokenGraph(claim, trustees, trustGraph) {
 }
 
 
-//listen for adding tokens
+// listen for adding tokens
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "SEND_JSON") {
-    const json = message.payload;
 
-    console.log("received:", json);
+  if (message.type !== "SEND_JSON") {
+    return;
+  }
+
+  try {
+    const payload = message.payload;
+
+    if (!payload) {
+      throw new Error("Missing payload");
+    }
+
+    const tokens = Array.isArray(payload) ? payload : [payload];
+
+    const parsedTokens = tokens.map(obj => TokenResponse.fromJSON(obj));
+
+    parsedTokens.forEach(token => {
+      tokenResponseStore.add(token);
+    });
+
+    sendResponse({
+      status: "ok",
+      stored: parsedTokens.length
+    });
+
+  } catch (err) {
+
+    sendResponse({
+      status: "error",
+      message: err.message
+    });
 
   }
+
+  return true;
 });
 
 /**
