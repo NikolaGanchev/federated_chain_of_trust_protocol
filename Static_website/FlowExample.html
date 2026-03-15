@@ -59,20 +59,13 @@
                         </tr>
                         <tr>
                             <td><span class="step-badge">3</span></td>
-                            <td><strong>Exchange: Local → National</strong><br><small>[Client → National Issuer]</small>
+                            <td><strong>Exchange: Local → MegaIssuer</strong><br><small>[Client → MegaIssuer]</small>
                             </td>
-                            <td><code>POST https://bulgarianissuer.bg/exchange_token</code><br>National issuer fetches
-                                local-clerk.bg's public key, verifies the token, issues a fresh JWT.</td>
+                            <td><code>POST https://megaissuer.com/exchange_token</code><br>MegaIssuer verifies the
+                                local token, issues a fresh JWT signed with its own key.</td>
                         </tr>
                         <tr>
                             <td><span class="step-badge">4</span></td>
-                            <td><strong>Exchange: National → MegaIssuer</strong><br><small>[Client → MegaIssuer]</small>
-                            </td>
-                            <td><code>POST https://megaissuer.com/exchange_token</code><br>MegaIssuer verifies the
-                                national token, issues a fresh JWT signed with its own key.</td>
-                        </tr>
-                        <tr>
-                            <td><span class="step-badge">5</span></td>
                             <td><strong>Client presents token to RP</strong><br><small>[Client → RP]</small></td>
                             <td><code>POST https://website.com/fctp-callback</code><br>The RP sees only a MegaIssuer
                                 token. It has no idea the user is from a local city system. It learns:
@@ -80,7 +73,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="step-badge">6</span></td>
+                            <td><span class="step-badge">5</span></td>
                             <td><strong>RP verifies and logs user in</strong><br><small>[RP]</small></td>
                             <td>RP calls <code>POST https://megaissuer.com/verify_token</code>. Checks nullifier not
                                 already used. User is logged in.</td>
