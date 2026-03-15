@@ -1,36 +1,33 @@
-import IssuerTrustGraph from "./IssuerTrustGraph.js";
-import IssuerTrustGraph from "../IssuerMetadataClient.js";
+import TrustGraph from "./TrustGraph.js";
 
-export default class IssuerGraphBuilder {
-    constructor() {
-        this.visited = new Set();
-        this.graph = new IssuerTrustGraph();
+export default class TrustGraphBuilder {
+  constructor() {
+  }
+
+  async build(startIssuerUrl) {
+    this.visited = new Set();
+    this.graph = new TrustGraph(startIssuerUrl);
+    await this.crawl(startIssuerUrl)
+    return this.graph;
+  }
+
+  async crawl(issuerUrl) {
+
+    const origin = new URL(issuerUrl).origin;
+
+    if (this.visited.has(origin)) {
+      return;
     }
 
-    async build(startIssuerUrl) {
-        await this.crawl(startIssuerUrl);
+    this.visited.add(origin);
 
-        return this.graph;
+    const client = new IssuerMetadataClient(origin);
+    const metadata = await client.fetchMetadata();
+
+    this.graph.addNode(metadata);
+
+    for (const parent of (metadata.parents || [])) {
+      await this.crawl(parent);
     }
-
-    async crawl(issuerUrl) {
-
-        const origin = new URL(issuerUrl).origin;
-
-        if (this.visited.has(origin)) {
-            return;
-        }
-
-        this.visited.add(origin);
-
-        const client = new IssuerMetadataClient(origin);
-        const metadata = await client.fetchMetadata();
-
-        this.graph.addNode(metadata);
-
-        for (const parent of metadata.parents) {
-            await this.crawl(parent);
-        }
-    }
-
+  }
 }

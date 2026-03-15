@@ -1,6 +1,128 @@
-import { tokenStore as storage } from "./response/TokenResponsesStore.js";
+import TokenResponsesStore from "./response/TokenResponsesStore.js";
+import TrustGraphBuilder from "./issuer/graph/TrustGraphBuilder.js";
+import TrustGraphStore from "./issuer/graph/TrustGraphStore.js";
+(async () => {
 
 console.log("FCTP Background Service Worker Initialized");
+
+let tokenResponseStore = new TokenResponsesStore();
+tokenResponseStore.load();
+let trustGraphBuilder = new TrustGraphBuilder();
+let trustGraphStore = new TrustGraphStore();
+trustGraphStore.load();
+
+async function getTokens(tokenResponses) {
+  for (element in tokenResponses) {
+    await tokenResponseStore.add(element);
+  }
+}
+
+async function giveToken(claim, trustees) {
+  for(const graph of trustGraphStore.values()) {
+    const token = await giveTokenGraph(claim, trustees, graph);
+
+    if(token !== null) {
+      return token;
+    }
+  }
+
+  return null;
+}
+
+async function giveTokenGraph(claim, trustees, trustGraph) {
+
+  const issuers = tokenResponseStore.getIssuersForClaim(claim);
+  if (issuers.length === 0) return null;
+
+  let bestIssuer = null;
+  let bestTrustee = null;
+  let bestToken = null;
+  let bestDepth = -1;
+
+  for (const issuer of issuers) {
+    for (const trustee of trustees) {
+      const path = trustGraph.bfs(issuer, trustee);
+      if (!path) continue;
+
+      const depth = path.length;
+
+      if (depth > bestDepth) {
+        const tokens = tokenResponseStore.get(claim, issuer);
+        if (tokens.length === 0) continue;
+
+        const token = tokens[0];
+
+        if (!token) continue;
+
+        bestIssuer = issuer;
+        bestTrustee = trustee;
+        bestToken = token;
+        bestDepth = depth;
+      }
+    }
+  }
+
+  if (!bestToken) return null;
+
+  await tokenResponseStore.remove(
+    bestToken.getClaim(),
+    bestToken.getIssuer(),
+    bestToken
+  );
+
+  if (bestIssuer === bestTrustee) {
+    return bestToken;
+  }
+
+  const exchangeClient = new TokenExchangeClient(bestTrustee);
+
+  const newToken = await exchangeClient.exchangeToken(
+    bestToken.getToken(),
+    bestToken.getTokenType(),
+    bestIssuer,
+    claim
+  );
+
+  return newToken;
+}
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+
+  if (message.type !== "SEND_JSON") {
+    return;
+  }
+
+  try {
+    const payload = message.payload;
+
+    if (!payload) {
+      throw new Error("Missing payload");
+    }
+
+    const tokens = Array.isArray(payload) ? payload : [payload];
+
+    const parsedTokens = tokens;
+
+    for (token of parsedTokens) {
+      await tokenResponseStore.add(token);
+    }
+
+    sendResponse({
+      status: "ok",
+      stored: parsedTokens.length
+    });
+
+  } catch (err) {
+
+    sendResponse({
+      status: "error",
+      message: err.message
+    });
+
+  }
+
+  return true;
+});
 
 const activeChallenges = new Map();
 let nextRuleId = 1;
@@ -32,17 +154,16 @@ chrome.webRequest.onHeadersReceived.addListener(
       }
 
       if (claim) {
-        let tokenResponse = null;
-        for (let i = 0; i < fctpTrustees.length; i++) {   
-          if (storage.length(fctpTrustees, claim) !== 0) {
-            tokenResponse = storage.pop(fctpTrustees, claim);
-            break;
-          }
-        }
+        let tokenResponse = await giveToken(claim, fctpTrustees);
 
+        console.log(tokenResponse);
         if (!tokenResponse) {
-          // TODO
-          console.error("No token available in storage for the requested trustees/claim.");
+          chrome.notifications.create({
+            type: "basic",
+            iconUrl: "icons/icon128.png",
+            title: "Security Alert: Missing FCTP Proof",
+            message: "No token available in storage for claim '" + claim + "' from issuers " + JSON.stringify(fctpTrustees) + "! Refer to the issuer."
+          })
           return;
         }
 
@@ -72,9 +193,9 @@ chrome.webRequest.onHeadersReceived.addListener(
               type: "modifyHeaders",
               requestHeaders: [
                 { header: "FCTP-NONCE", operation: "set", value: nonce },
-                { header: "FCTP-TOKEN", operation: "set", value: tokenResponse.token },
-                { header: "FCTP-ISSUER", operation: "set", value: tokenResponse.issuer_id },
-                { header: "FCTP-TOKEN-TYPE", operation: "set", value: tokenResponse.token_type },
+                { header: "FCTP-TOKEN", operation: "set", value: tokenResponse.getToken() },
+                { header: "FCTP-ISSUER", operation: "set", value: tokenResponse.getIssuer() },
+                { header: "FCTP-TOKEN-TYPE", operation: "set", value: tokenResponse.getTokenType() },
               ]
             },
             condition: {
@@ -176,3 +297,5 @@ function randomAscii(n) {
   }
   return result;
 }
+    
+})();

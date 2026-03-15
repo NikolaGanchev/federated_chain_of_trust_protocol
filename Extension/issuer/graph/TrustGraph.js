@@ -1,78 +1,82 @@
-export default class IssuerTrustGraph {
+export default class TrustGraph {
 
-    constructor(name) {
-        this.nodes = new Map();
-        this.edges = new Map();
-        this.name = name
+  constructor(startIssuerUrl) {
+    this.nodes = new Map();
+    this.edges = new Map();
+    this.startIssuerUrl = startIssuerUrl
+  }
+
+  getRootIssuer() {
+    return this.startIssuerUrl
+  }
+
+  addNode(metadata) {
+    this.nodes.set(metadata.issuerId, metadata);
+    this.edges.set(metadata.issuerId, [...(metadata.parents || [])]);
+  }
+
+  getParents(issuerId) {
+    return this.edges.get(issuerId) || [];
+  }
+
+  bfs(startIssuerId, targetIssuerId) {
+
+    if (!this.nodes.has(startIssuerId)) {
+      throw new Error(`Unknown start issuer: ${startIssuerId}`);
     }
 
-    addNode(metadata) {
-        this.nodes.set(metadata.issuerId, metadata);
-        this.edges.set(metadata.issuerId, metadata.parents || []);
-    }
+    const visited = new Set();
+    const queue = [[startIssuerId]];
 
-    getParents(issuerId) {
-        return this.edges.get(issuerId) || [];
-    }
+    while (queue.length > 0) {
 
-    bfs(startIssuerId, targetIssuerId) {
+      const path = queue.shift();
+      const current = path[path.length - 1];
 
-        if (!this.nodes.has(startIssuerId)) {
-            throw new Error(`Unknown start issuer: ${startIssuerId}`);
+      if (current === targetIssuerId) {
+        return path;
+      }
+
+      if (visited.has(current)) {
+        continue;
+      }
+
+      visited.add(current);
+
+      const parents = this.getParents(current);
+
+      for (const parent of parents) {
+
+        if (!visited.has(parent) && this.nodes.has(parent)) {
+          queue.push([...path, parent]);
         }
 
-        const visited = new Set();
-        const queue = [[startIssuerId]];
-
-        while (queue.length > 0) {
-
-            const path = queue.shift();
-            const current = path[path.length - 1];
-
-            if (current === targetIssuerId) {
-                return path;
-            }
-
-            if (visited.has(current)) {
-                continue;
-            }
-
-            visited.add(current);
-
-            const parents = this.getParents(current);
-
-            for (const parent of parents) {
-
-                if (!visited.has(parent)) {
-                    queue.push([...path, parent]);
-                }
-
-            }
-        }
-
-        return null;
+      }
     }
 
-    toJSON() {
-        return {
-            nodes: [...this.nodes.values()],
-            edges: [...this.edges.entries()]
-        };
+    return null;
+  }
+
+  toJSON() {
+    return {
+      startIssuerUrl: this.startIssuerUrl,
+      nodes: [...this.nodes.values()],
+      edges: [...this.edges.entries()]
+    };
+  }
+
+  static fromJSON(json) {
+    const graph = new TrustGraph(json.startIssuerUrl);
+
+    for (const node of json.nodes) {
+      const metadata = IssuerMetadata.fromJSON(node);
+      graph.nodes.set(metadata.issuerId, metadata);
     }
 
-    static fromJSON(json) {
-
-        const graph = new IssuerTrustGraph();
-
-        for (const node of json.nodes) {
-            const metadata = IssuerMetadata.fromJSON(node);
-            graph.nodes.set(metadata.issuerId, metadata);
-        }
-
-        for (const [issuerId, parents] of json.edges) {
-            graph.edges.set(issuerId, parents);
-        }
-
-        return graph;
+    for (const [issuerId, parents] of json.edges) {
+      graph.edges.set(issuerId, parents);
     }
+
+    return graph;
+  }
 }

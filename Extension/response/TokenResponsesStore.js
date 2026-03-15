@@ -1,35 +1,32 @@
 import TokenResponse from "./TokenResponse.js";
 
-class TokenResponsesStore {
+export default class TokenResponsesStore {
 
   static STORAGE_KEY = "fctp_token_store";
 
   constructor() {
     this.tokens = new Map();
-    this.load();
   }
+  async load() {
+    const result = await chrome.storage.local.get(TokenResponsesStore.STORAGE_KEY);
+    
+    const storedData = result[TokenResponsesStore.STORAGE_KEY];
+    
+    if (!storedData) return;
 
-  load() {
-    const raw = localStorage.getItem(TokenResponsesStore.STORAGE_KEY);
-    if (!raw) return;
-
-    const parsed = JSON.parse(raw);
     const now = Math.floor(Date.now() / 1000);
 
-    for (const claim of Object.keys(parsed)) {
-
+    for (const claim of Object.keys(storedData)) {
       const issuerMap = new Map();
 
-      for (const issuerId of Object.keys(parsed[claim])) {
-
-        const arr = parsed[claim][issuerId]
+      for (const issuerId of Object.keys(storedData[claim])) {
+        const arr = storedData[claim][issuerId]
           .map(obj => TokenResponse.fromJSON(obj))
           .filter(t => !t.isExpired(now));
 
         if (arr.length > 0) {
           issuerMap.set(issuerId, arr);
         }
-
       }
 
       if (issuerMap.size > 0) {
@@ -37,27 +34,24 @@ class TokenResponsesStore {
       }
     }
 
-    this.cleanupExpired();
+    await this.cleanupExpired();
   }
 
-  persist() {
-
+  async persist() {
     const obj = {};
 
     for (const [claim, issuerMap] of this.tokens.entries()) {
-
       obj[claim] = {};
 
       for (const [issuerId, list] of issuerMap.entries()) {
         obj[claim][issuerId] = list.map(t => t.toJSON());
       }
-
     }
 
-    localStorage.setItem(TokenResponsesStore.STORAGE_KEY, JSON.stringify(obj));
+    await chrome.storage.local.set({ [TokenResponsesStore.STORAGE_KEY]: obj });
   }
 
-  add(tokenResponse) {
+  async add(tokenResponse) {
 
     const claim = tokenResponse.getClaim();
     const issuer = tokenResponse.getIssuer();
@@ -74,10 +68,10 @@ class TokenResponsesStore {
 
     issuerMap.get(issuer).push(tokenResponse);
 
-    this.persist();
+    await this.persist();
   }
 
-  remove(claim, issuerId, token = null) {
+  async remove(claim, issuerId, token = null) {
 
     const issuerMap = this.tokens.get(claim);
     if (!issuerMap) return false;
@@ -103,7 +97,7 @@ class TokenResponsesStore {
       this.tokens.delete(claim);
     }
 
-    this.persist();
+    await this.persist();
     return true;
   }
 
@@ -133,7 +127,7 @@ class TokenResponsesStore {
 
     return list.filter(t => !t.isExpired(now));
   }
-
+  
   getIssuersForClaim(claim) {
 
     const issuerMap = this.tokens.get(claim);
@@ -142,7 +136,7 @@ class TokenResponsesStore {
     return [...issuerMap.keys()];
   }
 
-  cleanupExpired() {
+  async cleanupExpired() {
 
     const now = Math.floor(Date.now() / 1000);
 
@@ -166,8 +160,6 @@ class TokenResponsesStore {
 
     }
 
-    this.persist();
+    await this.persist();
   }
 }
-
-export const tokenStore = new TokenResponsesStore();

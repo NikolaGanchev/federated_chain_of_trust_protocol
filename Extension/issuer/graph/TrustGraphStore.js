@@ -1,44 +1,43 @@
+import TrustGraph from "./TrustGraph.js";
+
 export default class TrustGraphStore {
 
   static STORAGE_KEY = "fctp_trust_graphs";
 
   constructor() {
     this.graphs = new Map();
-    this.load();
   }
 
-  load() {
-    const raw = localStorage.getItem(TrustGraphStore.STORAGE_KEY);
-    if (!raw) return;
+  async load() {
+    const result = await chrome.storage.local.get(TrustGraphStore.STORAGE_KEY);
+    
+    const storedData = result[TrustGraphStore.STORAGE_KEY];
+    
+    if (!storedData) return;
 
-    const parsed = JSON.parse(raw);
-
-    for (const name of Object.keys(parsed)) {
-      this.graphs.set(name, TrustGraph.fromJSON(parsed[name]));
+    for (const name of Object.keys(storedData)) {
+      this.graphs.set(name, TrustGraph.fromJSON(storedData[name]));
     }
   }
 
-  persist() {
+  async persist() {
     const obj = {};
 
     for (const [startIssuerUrl, graph] of this.graphs.entries()) {
       obj[startIssuerUrl] = graph.toJSON();
     }
 
-    localStorage.setItem(
-      TrustGraphStore.STORAGE_KEY,
-      JSON.stringify(obj)
-    );
+    await chrome.storage.local.set({ [TrustGraphStore.STORAGE_KEY]: obj });
   }
 
-  add(startIssuerUrl, graph) {
+  async add(startIssuerUrl, graph) {
     this.graphs.set(startIssuerUrl, graph);
-    this.persist();
+    await this.persist();
   }
 
-  remove(startIssuerUrl) {
+  async remove(startIssuerUrl) {
     this.graphs.delete(startIssuerUrl);
-    this.persist();
+    await this.persist();
   }
 
   get(startIssuerUrl) {
@@ -49,9 +48,9 @@ export default class TrustGraphStore {
     return this.graphs.has(startIssuerUrl);
   }
 
-  clear() {
+  async clear() {
     this.graphs.clear();
-    this.persist();
+    await this.persist();
   }
 
   *entries() {
