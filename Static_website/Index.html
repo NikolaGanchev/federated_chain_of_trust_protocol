@@ -1,138 +1,137 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Federated Chain of Trust</title>
-    <link rel="stylesheet" href="Styles/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-  </head>
 
-  <body>
-    <header class="navbar">
-      <div class="logo">
-        <a href="#"><img src="Images/Logo.png" alt="Logo" /></a>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Federated Chain of Trust</title>
+  <link rel="stylesheet" href="Styles/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
 
-      <nav class="nav-links">
-        <ul>
-          <li><a href="Index.html">Home</a></li>
-          <li><a href="FlowExample.html">Flow example</a></li>
-          <li><a href="Papers.html">Papers</a></li>
-          <li><a href="AboutUs.html">About us</a></li>
-        </ul>
-      </nav>
-    </header>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="#"><img src="Images/Logo.png" alt="Logo" /></a>
+    </div>
 
-    <main class="content-wrapper">
-      <h1>Federated Chain of Trust</h1>
-      <h5>
-        The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose,
-        privacy-preserving framework for identity and attribute verification
-        across the internet. It enables any website to accept verified claims —
-        such as age, nationality, or membership — without implementing custom
-        integrations against government APIs, national ID systems, or
-        third-party identity providers.
-      </h5>
+    <nav class="nav-links">
+      <ul>
+        <li><a href="Index.html">Home</a></li>
+        <li><a href="FlowExample.html">Flow example</a></li>
+        <li><a href="Papers.html">Related</a></li>
+        <li><a href="AboutUs.html">About us</a></li>
+      </ul>
+    </nav>
+  </header>
 
-      <div class="flow-container">
-        <div class="box local">
-          <div class="title">Local Issuer</div>
-          <div class="url">e.g. Blagoevgrad Municipality</div>
-          <div class="description">
-            Knows your real identity. Mints your first token.
-          </div>
-        </div>
+  <main class="content-wrapper">
+    <h1>Federated Chain of Trust</h1>
+    <h5>
+      The Federated Chain Of Trust Protocol (FCTP) defines a general-purpose,
+      privacy-preserving framework for identity and attribute verification
+      across the internet. It enables any website to accept verified claims —
+      such as age, nationality, or membership — without implementing custom
+      integrations against government APIs, national ID systems, or
+      third-party identity providers.
+    </h5>
 
-        <i class="fa-solid fa-angles-right"></i>
-
-        <div class="box national">
-          <div class="title">National Issuer</div>
-          <div class="url">e.g. Bulgaria</div>
-          <div class="description">
-            Trusts local issuers. Upgrades the token.
-          </div>
-        </div>
-
-        <i class="fa-solid fa-angles-right"></i>
-
-        <div class="box mega">
-          <div class="title">MegaIssuer</div>
-          <div class="url">e.g. megaissuer.com</div>
-          <div class="description">
-            Top of chain. The only issuer the RP trusts.
-          </div>
-        </div>
-
-        <i class="fa-solid fa-angles-right"></i>
-
-        <div class="box rp">
-          <div class="title">RP</div>
-          <div class="url">website.com</div>
-          <div class="description">Sees only MegaIssuer.</div>
+    <div class="flow-container">
+      <div class="box local">
+        <div class="title">Local Issuer</div>
+        <div class="url">e.g. Blagoevgrad Municipality</div>
+        <div class="description">
+          Knows your real identity. Mints your first token.
         </div>
       </div>
-      <div id="visual1"></div>
-      <section class="full-section">
-        <div class="section-content">
-          <h2 class="table-header">Supported Token Formats</h2>
+
+      <i class="fa-solid fa-angles-right"></i>
+
+      <div class="box national">
+        <div class="title">National Issuer</div>
+        <div class="url">e.g. Bulgaria</div>
+        <div class="description">
+          Trusts local issuers. Upgrades the token.
         </div>
-      </section>
+      </div>
 
-      <section class="features">
-  <div class="feature-card">
-    <i class="fa-solid fa-user-shield"></i>
-    <h2>Privacy by default</h2>
-    <p>
-      Verifying websites learn only the minimum necessary claim.
-      The origin issuer is never revealed.
-    </p>
-  </div>
+      <i class="fa-solid fa-angles-right"></i>
 
-  <div class="feature-card">
-    <i class="fa-solid fa-plug"></i>
-    <h2>Minimal integration cost</h2>
-    <p>
-      A website integrates once against the FCTP API and automatically
-      accepts tokens from any issuer.
-    </p>
-  </div>
+      <div class="box mega">
+        <div class="title">MegaIssuer</div>
+        <div class="url">e.g. megaissuer.com</div>
+        <div class="description">
+          Top of chain. The only issuer the RP trusts.
+        </div>
+      </div>
 
-  <div class="feature-card">
-    <i class="fa-solid fa-network-wired"></i>
-    <h2>No mandatory root</h2>
-    <p>
-      There is no central authority. Any entity can be an issuer.
-    </p>
-  </div>
+      <i class="fa-solid fa-angles-right"></i>
 
-  <div class="feature-card">
-    <i class="fa-solid fa-bolt"></i>
-    <h2>Single-hop exchange</h2>
-    <p>
-      A user exchanges their local token directly at the target issuer.
-    </p>
-  </div>
+      <div class="box rp">
+        <div class="title">RP</div>
+        <div class="url">website.com</div>
+        <div class="description">Sees only MegaIssuer.</div>
+      </div>
+    </div>
+    <div id="visual1"></div>
+    <section class="full-section">
+      <div class="section-content">
+        <h2 class="table-header">Supported Token Formats</h2>
+      </div>
+    </section>
 
-  <div class="feature-card">
-    <i class="fa-solid fa-code-branch"></i>
-    <h2>Format agnostic</h2>
-    <p>
-      Existing identity systems plug in without reimplementing issuance.
-    </p>
-  </div>
+    <section class="features">
+      <div class="feature-card">
+        <i class="fa-solid fa-user-shield"></i>
+        <h2>Privacy by default</h2>
+        <p>
+          Verifying websites learn only the minimum necessary claim.
+          The origin issuer is never revealed.
+        </p>
+      </div>
 
-  <div class="feature-card">
-    <i class="fa-solid fa-chart-line"></i>
-    <h2>Scalable by design</h2>
-    <p>
-      No endpoint serves more than its own immediate relationships.
-    </p>
-  </div>
-</section>
-    </main>
-  </body>
+      <div class="feature-card">
+        <i class="fa-solid fa-plug"></i>
+        <h2>Minimal integration cost</h2>
+        <p>
+          A website integrates once against the FCTP API and automatically
+          accepts tokens from any issuer.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-network-wired"></i>
+        <h2>No mandatory root</h2>
+        <p>
+          There is no central authority. Any entity can be an issuer.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-bolt"></i>
+        <h2>Single-hop exchange</h2>
+        <p>
+          A user exchanges their local token directly at the target issuer.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-code-branch"></i>
+        <h2>Format agnostic</h2>
+        <p>
+          Existing identity systems plug in without reimplementing issuance.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-chart-line"></i>
+        <h2>Scalable by design</h2>
+        <p>
+          No endpoint serves more than its own immediate relationships.
+        </p>
+      </div>
+    </section>
+  </main>
+</body>
+
 </html>
