@@ -108,7 +108,7 @@ class TrustGraph {
 
       for (const parent of parents) {
 
-        if (!visited.has(parent)) {
+        if (!visited.has(parent) && this.nodes.has(parent)) {
           queue.push([...path, parent]);
         }
 
@@ -432,8 +432,6 @@ class TokenResponse {
   }
 }
 
-
-//check later
 class TokenResponsesStore {
 
   static STORAGE_KEY = "fctp_token_store";
@@ -609,14 +607,14 @@ let trustGraphBuilder = new TrustGraphBuilder();
 let trustGraphStore = new TrustGraphStore();
 
 function getTokens(tokenResponses) {
-  tokenResponses.array.forEach(element => {
+  tokenResponses.forEach(element => {
     tokenResponseStore.add(element)
   });
 }
 
 async function giveToken(claim, trustees) {
   for(const graph of trustGraphStore.values()) {
-    token = await giveToken(claim, trustees, graph);
+    const token = await giveTokenGraph(claim, trustees, graph);
 
     if(token !== null) {
       return token;
@@ -626,7 +624,7 @@ async function giveToken(claim, trustees) {
   return null;
 }
 
-async function giveToken(claim, trustees, trustGraph) {
+async function giveTokenGraph(claim, trustees, trustGraph) {
 
   const issuers = tokenResponseStore.getIssuersForClaim(claim);
   if (issuers.length === 0) return null;
@@ -644,7 +642,11 @@ async function giveToken(claim, trustees, trustGraph) {
       const depth = path.length;
 
       if (depth > bestDepth) {
-        const token = tokenResponseStore.get(claim, issuer);
+        const tokens = tokenResponseStore.get(claim, issuer);
+        if (tokens.length === 0) continue;
+
+        const token = tokens[0];
+
         if (!token) continue;
 
         bestIssuer = issuer;
@@ -657,7 +659,11 @@ async function giveToken(claim, trustees, trustGraph) {
 
   if (!bestToken) return null;
 
-  tokenResponseStore.remove(bestToken);
+  tokenResponseStore.remove(
+    bestToken.getClaim(),
+    bestToken.getIssuer(),
+    bestToken
+  );
 
   if (bestIssuer === bestTrustee) {
     return bestToken;
