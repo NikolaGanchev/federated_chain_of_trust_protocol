@@ -37,11 +37,10 @@ document.getElementById("login-form").addEventListener("submit", async function 
         const url = 'https://example.com/api/login';
         const result = await sendLoginForm(url);
 
-        result.map(t => TokenResponse.fromJSON(t)).array.forEach(async item => {
-            await TokenResponseStorage.add(item);
-        });;
-
-        truthGraphs.push(await new IssuerGraphBuilder(url).build())
+        chrome.runtime.sendMessage({
+            type: "SEND_JSON",
+            payload: result
+        });
     } catch (err) {
         console.error(err);
     }

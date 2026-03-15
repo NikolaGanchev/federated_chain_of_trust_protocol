@@ -675,6 +675,17 @@ async function giveToken(claim, trustees, trustGraph) {
   return newToken;
 }
 
+
+//listen for adding tokens
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "SEND_JSON") {
+    const json = message.payload;
+
+    console.log("received:", json);
+
+  }
+});
+
 /**
  * @type {{ claim: any; issuers: any; } | null}
  */
