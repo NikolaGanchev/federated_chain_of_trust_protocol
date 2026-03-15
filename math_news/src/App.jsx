@@ -5,11 +5,37 @@ const App = () => {
   const [articles, setArticles] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isRetry, setIsRetry] = useState(false);
 
   useEffect(() => {
-   fetch('http://localhost:5000/content')
+    function fctp_send_again(e) {
+      if (e.data.action && e.data.action == "RETRY_FCTP_REQUEST") {
+        if (!e.data.url || !e.data.method) {
+          console.err("missing");
+        }
+
+        let entries = JSON.parse(localStorage.getItem("fctp_send_again"));
+        if(entries == null) entries = [];
+
+        entries.push({
+          url: e.data.url,
+          method: e.data.method
+        });
+
+        localStorage.setItem("fctp_send_again", JSON.stringify(entries));
+        setIsRetry(true);
+      }
+    }
+
+   if (!isRetry) {
+    window.addEventListener('message', fctp_send_again);
+   }
+
+   fetch('http://localhost:5001/content')
       .then((res) => {
-        if (!res.ok) throw new Error('Forbidden');
+        if (res.status == 403 && !isRetry) {
+          return;
+        } else if (!res.ok) throw new Error("Unauthorized");
         return res.json();
       })
       .then((data) => {
@@ -27,7 +53,7 @@ const App = () => {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [isRetry]);
 
   if (loading) return <div className="status-message">Loading Constants...</div>;
   if (error) return <div className="status-message error-text">forbidden content</div>;
