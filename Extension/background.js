@@ -156,12 +156,12 @@ chrome.webRequest.onHeadersReceived.addListener(
       if (claim) {
         let tokenResponse = await giveToken(claim, fctpTrustees);
 
-        console.log(tokenResponse);
+        console.log("Token response " + tokenResponse);
         if (!tokenResponse) {
           chrome.notifications.create({
             type: "basic",
             iconUrl: "icons/icon128.png",
-            title: "Security Alert: Missing FCTP Proof",
+            title: "Missing token",
             message: "No token available in storage for claim '" + claim + "' from issuers " + JSON.stringify(fctpTrustees) + "! Refer to the issuer."
           })
           return;

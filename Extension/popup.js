@@ -1,45 +1,31 @@
-import TokenResponseStorage from "./response/TokenResponseStorage.js";
-import IssuerTrustGraphStorage from "./issuer/graph/IssuerTrustGraphStorage.js";
-import TokenResponse from "./response/TokenResponse.js";
-import IssuerGraphBuilder from "./issuer/graph/IssuerGraphBuilder.js";
-
-let truthGraphs = await IssuerTrustGraphStorage.loadGraphs()
-
-async function sendLoginForm(url) {
-    const form = document.getElementById("login-form");
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: username,
-            password: password
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error("Request failed");
-    }
-
-    const json = await response.json();
-    return json;
-}
-
-document.getElementById("login-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
+document.getElementById("get-token").addEventListener("click", async function (e) {
     try {
-        const url = 'https://example.com/api/login';
-        const result = await sendLoginForm(url);
+        const url = 'http://localhost:3001/issue_token';
+        const result = await fetch(url, {
+            method: "POST",
+            body: JSON.stringify({
+                claim: "age_over_18"
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        
+        if (!result.ok) {
+            chrome.notifications.create({
+                type: "basic",
+                iconUrl: "icons/icon128.png",
+                title: "Could not get token from issuer",
+                message: "Could not get token from issuer " + "http://localhost:3001/issue_token"
+            })
+            return;
+        }
+        let response = await result.json();
+        console.log(response);
 
         chrome.runtime.sendMessage({
             type: "SEND_JSON",
-            payload: result
+            payload: response
         });
     } catch (err) {
         console.error(err);
