@@ -1,4 +1,5 @@
 import TrustGraph from "./TrustGraph.js";
+import IssuerMetadataClient from "../IssuerMetadataClient.js";
 
 export default class TrustGraphBuilder {
   constructor() {

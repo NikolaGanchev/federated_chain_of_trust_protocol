@@ -1,18 +1,21 @@
 import TokenResponsesStore from "./response/TokenResponsesStore.js";
 import TrustGraphBuilder from "./issuer/graph/TrustGraphBuilder.js";
 import TrustGraphStore from "./issuer/graph/TrustGraphStore.js";
+import TokenResponse from "./response/TokenResponse.js";
+import TokenExchangeClient from "./exchange/TokenExchangeClient.js";
+
 (async () => {
 
 console.log("FCTP Background Service Worker Initialized");
 
 let tokenResponseStore = new TokenResponsesStore();
-tokenResponseStore.load();
+await tokenResponseStore.load();
 let trustGraphBuilder = new TrustGraphBuilder();
 let trustGraphStore = new TrustGraphStore();
-trustGraphStore.load();
+await trustGraphStore.load();
 
 async function getTokens(tokenResponses) {
-  for (element in tokenResponses) {
+  for (let element in tokenResponses) {
     await tokenResponseStore.add(element);
   }
 }
@@ -87,7 +90,8 @@ async function giveTokenGraph(claim, trustees, trustGraph) {
 }
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-
+  console.log(message.payload)
+  console.log("Reached message")
   if (message.type !== "SEND_JSON") {
     return;
   }
@@ -103,8 +107,21 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
     const parsedTokens = tokens;
 
-    for (token of parsedTokens) {
-      await tokenResponseStore.add(token);
+    console.log(parsedTokens)
+    for (const token of parsedTokens) {
+      await tokenResponseStore.add(TokenResponse.fromJSON(token));
+    }
+
+    console.log("saved");
+
+    console.log("BEGIN GRAPH");
+    if (parsedTokens.length > 0) {
+      console.log(parsedTokens);
+      console.log(parsedTokens[0].issuer_id);
+      const g = await trustGraphBuilder.build(parsedTokens[0].issuer_id);
+      console.log(g);
+      await trustGraphStore.add(parsedTokens[0].issuer_id, g);
+      console.log("saved graph");
     }
 
     sendResponse({
@@ -113,7 +130,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     });
 
   } catch (err) {
-
+    console.log(err);
     sendResponse({
       status: "error",
       message: err.message
@@ -135,6 +152,7 @@ chrome.webRequest.onHeadersReceived.addListener(
     const targetUrl = details.url;
     const targetMethod = details.method.toLowerCase();
     const challengeKey = `${targetMethod} ${targetUrl}`;
+    console.log(challengeKey);
 
     if (details.statusCode === 403) {
       let claim = null;
@@ -156,7 +174,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       if (claim) {
         let tokenResponse = await giveToken(claim, fctpTrustees);
 
-        console.log("Token response " + tokenResponse);
+        console.log("Token response ", tokenResponse);
         if (!tokenResponse) {
           chrome.notifications.create({
             type: "basic",
@@ -201,16 +219,9 @@ chrome.webRequest.onHeadersReceived.addListener(
             condition: {
               urlFilter: targetUrl,
               requestMethods: [targetMethod],
-              resourceTypes: ["xmlhttprequest", "fetch", "main_frame"]
             }
           }]
         });
-
-        chrome.tabs.sendMessage(details.tabId, {
-          action: "RETRY_FCTP_REQUEST",
-          url: targetUrl,
-          method: targetMethod
-        }).catch(err => console.log("Could not send message to tab.", err));
       }
 
       return; 
@@ -231,9 +242,16 @@ chrome.webRequest.onHeadersReceived.addListener(
       await chrome.storage.session.set({ fctpProof: proof });
       // TODO: Verify
 
+      console.log("Active challenges", activeChallenges);
       if (activeChallenges.has(challengeKey) && activeChallenges.get(challengeKey).timeoutIdProof > -1) {
         clearTimeout(activeChallenges.get(challengeKey).timeoutIdProof);
       }
+
+      await chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: [activeChallenges.get(challengeKey).ruleId]
+      });
+
+    console.log("active challenge deleting nonce")
 
       activeChallenges.delete(challengeKey);
       console.log("Proof verified");
@@ -253,10 +271,12 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     // Check if there is an active challenge for this URL
     if (activeChallenges.has(challengeKey) && activeChallenges.get(challengeKey).timeoutIdIdle > -1) {
       
+    console.log("active challenge detected")
       // Check if DNR successfully injected our FCTP-Nonce
       const hasNonce = details.requestHeaders.some(h => h.name.toLowerCase() === "fctp-nonce");
       
       if (hasNonce) {
+    console.log("active challenge has nonce")
         console.log(`Request in flight. Destroying DNR rule for ${challengeKey}.`);
         
         const challengeData = activeChallenges.get(challengeKey);
